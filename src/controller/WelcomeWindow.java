@@ -21,7 +21,7 @@ public class WelcomeWindow {
     }
 
     public void startGame(MouseEvent mouseEvent) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/GameWindow.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/GamePlay.fxml"));
         Parent root = loader.load();
         Main.primaryStage.setScene(new Scene(root));
         Main.primaryStage.centerOnScreen();
