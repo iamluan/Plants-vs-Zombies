@@ -16,10 +16,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 import javafx.util.Duration;
+import model.NormalZombie;
 import model.Zombie;
 
 import java.io.File;
@@ -67,11 +69,10 @@ public class GamePlay {
     public static List allMowers;
     public static ArrayList<Integer> zombieList1;
     public static ArrayList<Integer> zombieList2;
-    //public static ArrayList<Zombie> allZombies = new ArrayList<Zombie>();
 
-    public static int wonGame = 0;
+
     private volatile int spawnedZombies = 0;
-    public static double numZombiesKilled = 0;
+    public static double numberOfZombiesKilled = 0;
     public static ArrayList<Timeline> animationTimelines;
 
 
@@ -88,6 +89,7 @@ public class GamePlay {
         gameStatus = true;
         sunCountDisplay = sunCountLabel;
         allZombies = Collections.synchronizedList(new ArrayList<Zombie>());
+        //Wait for update
         //allPlants = Collections.synchronizedList(new ArrayList<Plant>());
 
     }
@@ -100,6 +102,35 @@ public class GamePlay {
 
     @FXML
     void getGridPosition(MouseEvent event) throws IOException {
+    }
+
+    /**
+     *
+     * @param t : Time to spawn new zombie(by seconds)
+     */
+    public void zombieGenerator(Random rand, double t) {
+        Timeline spawnZombie = new Timeline(new KeyFrame(Duration.seconds(t), event -> {
+            int lane;
+            int laneNumber = rand.nextInt(5);
+            if (laneNumber == 0)
+                lane = LANE1;
+            else if (laneNumber == 1)
+                lane = LANE2;
+            else if (laneNumber == 2)
+                lane = LANE3;
+            else if (laneNumber == 3)
+                lane = LANE4;
+            else
+                lane = LANE5;
+        }));
+    }
+
+    public static void spawnNormalZombie(Pane pane, int lane, int laneNumber)
+    {
+        NormalZombie zombie = new NormalZombie(1024, lane, laneNumber); // The x location of the outer right of the yard is 1024
+        zombie.createImage(pane);
+        GamePlay.allZombies.add(zombie);
+        zombie.moveZombie();
     }
 
 }
