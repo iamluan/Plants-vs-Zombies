@@ -12,7 +12,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 
-public abstract class Zombie {
+public abstract class Zombie extends GameElements {
     public int health;
     public int damage;
     public int lane;
@@ -27,20 +27,16 @@ public abstract class Zombie {
 
 
 
-    public Zombie(int x, int y, int health, int damage, int lane) {
-        this.x = x;
-        this.y = y;
+    public Zombie(int x, int y, String imagePath,  int health, int damage, int lane) {
+        super(x, y, imagePath, 68, 118);
         this.health = health;
         this.damage = damage;
         this.lane = lane;
 
     }
 
-    public int getHealth() {
-        return this.health;
-    }
 
-    public void createImage(Pane pane){
+    public void drawImage(Pane pane){
         ImageView img = new ImageView();
         Image im=new Image(imagePath,68,118,false,false);
         img.setImage(im);
@@ -77,24 +73,6 @@ public abstract class Zombie {
             mediaPlayer.setAutoPlay(true);
             mediaPlayer.play();
         }
-    }
-
-
-
-
-    public int getX() {
-        return x;
-    }
-    public int getY() {
-        return y;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
     }
 
 }

@@ -128,7 +128,7 @@ public class GamePlay {
     public static void spawnNormalZombie(Pane pane, int lane, int laneNumber)
     {
         NormalZombie zombie = new NormalZombie(1024, lane, laneNumber); // The x location of the outer right of the yard is 1024
-        zombie.createImage(pane);
+        zombie.drawImage(pane);
         GamePlay.allZombies.add(zombie);
         zombie.moveZombie();
     }
