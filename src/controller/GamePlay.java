@@ -2,16 +2,9 @@ package controller;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -39,7 +32,7 @@ public class GamePlay {
     @FXML
     private ImageView repeaterBuy;
     @FXML
-    private Label sunCountLabel;
+    private Label sunScoreLabel;
     @FXML
     private ImageView GameMenuLoaderButton;
     @FXML
@@ -51,7 +44,7 @@ public class GamePlay {
     /**
      * Set lanes in the yard
      */
-    private static int sunCount;
+    private static int sunScore;
     public static final int LANE1 = 50;
     public static final int LANE2 = 150;
     public static final int LANE3 = 250;
@@ -60,13 +53,13 @@ public class GamePlay {
     public static boolean gameStatus;
     public static Timeline sunTimeline;
     public static Timeline spZ1;
-    public static Timeline spZ2;
-    private static Label sunCountDisplay;
+    //public static Timeline spZ2;
+    private static Label sunScoreLabelControl;
     private static double timeElapsed;
 
     public static List allZombies;
     public static List allPlants;
-    public static List allMowers;
+    //public static List allMowers;
     public static ArrayList<Integer> zombieList1;
     public static ArrayList<Integer> zombieList2;
 
@@ -86,8 +79,9 @@ public class GamePlay {
         mediaPlayer.setStopTime(Duration.seconds(5));
         mediaPlayer.play();
 
+
         gameStatus = true;
-        sunCountDisplay = sunCountLabel;
+        sunScoreLabelControl = sunScoreLabel;
         allZombies = Collections.synchronizedList(new ArrayList<Zombie>());
         //Wait for update
         //allPlants = Collections.synchronizedList(new ArrayList<Plant>());
@@ -132,5 +126,20 @@ public class GamePlay {
         GamePlay.allZombies.add(zombie);
         zombie.moveZombie();
     }
+
+    public static void updateSunScore(int numOfSunAdded) {
+        sunScore += numOfSunAdded;
+        getSunScoreLabel().setText(Integer.toString(sunScore));
+    }
+
+    public static Label getSunScoreLabel() {
+        return sunScoreLabelControl;
+    }
+
+    public static void removeZombie(Zombie zombie){
+        zombie.image.setVisible(false);
+        allZombies.remove(zombie);
+    }
+
 
 }

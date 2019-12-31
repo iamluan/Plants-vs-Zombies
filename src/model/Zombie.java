@@ -54,8 +54,7 @@ public abstract class Zombie extends GameElements {
         GamePlay.animationTimelines.add(animation);
     }
 
-    public void zombieWalk()
-    {
+    public void zombieWalk() {
         if(getX()>220 && this.health>0) // If the zombie did't reach the house and is still alive
         {
             //Test deltaX
@@ -75,4 +74,15 @@ public abstract class Zombie extends GameElements {
         }
     }
 
+    public int getHealth() {
+        return health;
+    }
+
+    public int getLane() {
+        return lane;
+    }
+
+    public int setHealth() {
+        return health;
+    }
 }
