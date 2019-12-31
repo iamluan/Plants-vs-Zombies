@@ -11,11 +11,10 @@ public abstract class GameElements{
     protected int width;
     protected int height;
 
-    public GameElements(int x_, int y_, String path, int width, int height){
-        this.x=x_;
-        this.y=y_;
+    public GameElements(int x, int y, String path, int width, int height){
+        this.x=x;
+        this.y=y;
         this.path=path;
-//        this.pane=p;
         this.width=width;
         this.height=height;
 
