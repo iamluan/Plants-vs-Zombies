@@ -34,27 +34,23 @@ public class Sun extends GameElements{
     }
 
     @Override
-    public void drawImage(Pane p)
-    {
+    public void drawImage(Pane p) {
         super.drawImage(p);
         this.img.setOnMouseClicked(e->{
             this.img.setVisible(false);
             this.img.setDisable(true);
-            GamePlay.updateSunCount(25);
+            GamePlay.updateSunScore(25);
         });
 
     }
 
-    public void moveSun()
-    {
-        if(getY()<=550)
-        {
+    public void moveSun() {
+        if(getY()<=550) {
             setY(getY()+1);
         }
     }
 
-    public void dropSun()
-    {
+    public void dropSun() {
         Timeline animation = new Timeline(new KeyFrame(Duration.millis(12),e -> moveSun()));
         animation.setCycleCount(550);
         animation.play();
