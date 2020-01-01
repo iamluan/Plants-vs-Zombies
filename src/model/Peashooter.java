@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 import java.sql.Time;
+import java.util.Iterator;
 
 public class Peashooter extends Plant  {
 
@@ -21,8 +22,14 @@ public class Peashooter extends Plant  {
 
     public void act(Pane pane){
         Timeline shoot = new Timeline(new KeyFrame(Duration.seconds(2), actionEvent -> {
-            PeaBullet peaBullet = new PeaBullet(x, y, getX(), lane);
-            peaBullet.shoot(pane);
+            Iterator<Zombie> zombies = GamePlay.allZombies.iterator();
+            while (zombies.hasNext()){
+                Zombie zombie = zombies.next();
+                if(zombie.getLane() == this.lane) {
+                    PeaBullet peaBullet = new PeaBullet(x, y, getX(), lane);
+                    peaBullet.shoot(pane);
+                }
+            }
         }));
         shoot.setCycleCount(Timeline.INDEFINITE);
         shoot.play();

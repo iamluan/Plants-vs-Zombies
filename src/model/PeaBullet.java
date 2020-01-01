@@ -29,8 +29,6 @@ public class PeaBullet extends GameElements {
         Timeline shooting = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
             drawImage(pane);
             if(x <= 1050) setX(getX() + 1);
-            if(getX() <= plantPos) img.setVisible(false);
-            else img.setVisible(true);
             collideZombie();
         }));
         shooting.setCycleCount(Timeline.INDEFINITE);
