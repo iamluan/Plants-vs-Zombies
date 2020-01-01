@@ -14,7 +14,6 @@ public class Sun extends GameElements{
     public Sun(int x, int y, boolean fallingSun)
     {
         super(x, y, "resource/image/sun.gif", 50, 50);
-//      super.makeImage();
 
         if(fallingSun) timeouttime=14000;
         else timeouttime=5000;
