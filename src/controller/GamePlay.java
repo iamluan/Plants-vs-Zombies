@@ -15,8 +15,6 @@ import javafx.scene.media.MediaPlayer;
 
 import javafx.util.Duration;
 import model.NormalZombie;
-import model.Plant;
-import model.PlantCard;
 import model.Zombie;
 
 import java.io.File;
@@ -46,7 +44,7 @@ public class GamePlay {
     /**
      * Set lanes in the yard
      */
-    private static int sunScore = 75;
+    private static int sunScore;
     public static final int LANE1 = 50;
     public static final int LANE2 = 150;
     public static final int LANE3 = 250;
@@ -54,7 +52,7 @@ public class GamePlay {
     public static final int LANE5 = 450;
     public static boolean gameStatus;
     public static Timeline sunTimeline;
-    public static Timeline spawnedZombieTimeline;
+    public static Timeline spZ1;
     //public static Timeline spZ2;
     private static Label sunScoreLabelControl;
     private static double timeElapsed;
@@ -71,7 +69,7 @@ public class GamePlay {
     public static ArrayList<Timeline> animationTimelines;
 
 
-    public void initialize() throws IOException {
+    public void initialize() throws Exception {
 
         String waveFile = "src/resource/sound/zombies_coming.wav";
         Media wave = new Media(new File(waveFile).toURI().toString());
@@ -85,17 +83,9 @@ public class GamePlay {
         gameStatus = true;
         sunScoreLabelControl = sunScoreLabel;
         allZombies = Collections.synchronizedList(new ArrayList<Zombie>());
-        allPlants = Collections.synchronizedList(new ArrayList<Plant>());
+        //Wait for update
+        //allPlants = Collections.synchronizedList(new ArrayList<Plant>());
 
-    }
-
-    /**
-     * Initialize all the data in the game
-     */
-    public void createGame(){
-        PlantCard.displayPlantCard(GamePlayRoot);
-        sunScoreLabelControl.setText(String.valueOf(sunScore));
-        zombieGenerator(7);
     }
 
 
@@ -112,11 +102,10 @@ public class GamePlay {
      *
      * @param t : Time to spawn new zombie(by seconds)
      */
-    public void zombieGenerator(double t) {
+    public void zombieGenerator(Random rand, double t) {
         Timeline spawnZombie = new Timeline(new KeyFrame(Duration.seconds(t), event -> {
             int lane;
-            Random rand = new Random();
-            int laneNumber =  rand.nextInt(5);
+            int laneNumber = rand.nextInt(5);
             if (laneNumber == 0)
                 lane = LANE1;
             else if (laneNumber == 1)
@@ -127,17 +116,11 @@ public class GamePlay {
                 lane = LANE4;
             else
                 lane = LANE5;
-
-            spawnNormalZombie(GamePlayRoot, lane, laneNumber);
         }));
-
-        spawnZombie.setCycleCount(Timeline.INDEFINITE);
-        spawnZombie.play();
-        spawnedZombieTimeline = spawnZombie;
-        animationTimelines.add(spawnZombie);
     }
 
-    public static void spawnNormalZombie(Pane pane, int lane, int laneNumber) {
+    public static void spawnNormalZombie(Pane pane, int lane, int laneNumber)
+    {
         NormalZombie zombie = new NormalZombie(1024, lane, laneNumber); // The x location of the outer right of the yard is 1024
         zombie.drawImage(pane);
         GamePlay.allZombies.add(zombie);
