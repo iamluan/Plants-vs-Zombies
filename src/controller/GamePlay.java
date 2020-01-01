@@ -70,6 +70,21 @@ public class GamePlay {
     public static ArrayList<Timeline> animationTimelines;
     public ArrayList<PlantCard> plantCards = new ArrayList<>();
 
+
+
+
+
+
+    public void createGame(){
+        animationTimelines = new ArrayList<Timeline>();
+        sunScoreLabelControl.setText(String.valueOf(sunScore));
+        createPlantCards();
+        Random rand = new Random();
+        createFallingSuns(rand);
+        zombieGenerator(rand, 2);
+        startAnimations();
+    }
+
     public void startAnimations()
     {
         synchronized (allPlants) {
@@ -119,7 +134,6 @@ public class GamePlay {
         allZombies = Collections.synchronizedList(new ArrayList<Zombie>());
         allPlants = Collections.synchronizedList(new ArrayList<Plant>());
 
-        startAnimations();
     }
 
 
@@ -193,14 +207,6 @@ public class GamePlay {
         plantCards.add(peashooterCard);
     }
 
-    public void createGame(){
-        animationTimelines = new ArrayList<Timeline>();
-        sunScoreLabelControl.setText(String.valueOf(sunScore));
-        createPlantCards();
-        Random rand = new Random();
-        createFallingSuns(rand);
-        zombieGenerator(rand, 2);
-    }
 
     /**
      *
