@@ -48,13 +48,13 @@ public abstract class Zombie extends GameElements {
         if(getX()>220 && this.health>0) { // If the zombie did't reach the house and is still alive
             //Update the location of the zombie
             setX(getX() + deltaX);
-            checkReachedHouse();
+            //checkReachedHouse();
         }
     }
 
     public void checkReachedHouse() {
         if (image.getX() <= 220) { //reach the house
-            String eatingBrainFile = "src/resource/sound/eatingbrain.wav";
+            String eatingBrainFile = "file:resource/sound/eatingbrain.wav";
             Media eatingBrain = new Media(new File(eatingBrainFile).toURI().toString());
             MediaPlayer mediaPlayer = new MediaPlayer(eatingBrain);
             mediaPlayer.setAutoPlay(true);
@@ -85,7 +85,7 @@ public abstract class Zombie extends GameElements {
         return lane;
     }
 
-    public int setHealth() {
+    public int setHealth(int health) {
         return health;
     }
 }

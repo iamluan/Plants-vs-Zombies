@@ -51,7 +51,7 @@ public class GamePlay {
     public static final int LANE5 = 450;
     public static boolean gameStatus;
     public static Timeline sunTimeline;
-    public static Timeline spZ1;
+    public static Timeline spawnZombieTimeline;
     //public static Timeline spZ2;
     private static Label sunScoreLabelControl;
     private static double timeElapsed;
@@ -97,6 +97,18 @@ public class GamePlay {
     }
 
     /**
+     *   Initialize all the data in the game screen
+     */
+    public void createGame(){
+        animationTimelines = new ArrayList<Timeline>();
+        sunScoreLabelControl.setText(String.valueOf(sunScore));
+        PlantCard.displayPlantCard(GamePlayRoot);
+        Random rand = new Random();
+        createFallingSuns(rand);
+        zombieGenerator(rand, 2);
+    }
+
+    /**
      *
      * @param t : Time to spawn new zombie(by seconds)
      */
@@ -114,19 +126,16 @@ public class GamePlay {
                 lane = LANE4;
             else
                 lane = LANE5;
+
+            spawnNormalZombie(GamePlayRoot, lane, laneNumber);
         }));
+        spawnZombie.setCycleCount(Timeline.INDEFINITE);
+        spawnZombie.play();
+        spawnZombieTimeline = spawnZombie;
+        animationTimelines.add(spawnZombie);
+
     }
 
-    /**
-     *   Initialize all the data in the game screen
-     */
-    public void createGame(){
-        animationTimelines = new ArrayList<Timeline>();
-        sunScoreLabelControl.setText(String.valueOf(sunScore));
-        PlantCard.displayPlantCard(GamePlayRoot);
-        Random rand = new Random();
-        createFallingSuns(rand);
-    }
 
     public static void spawnNormalZombie(Pane pane, int lane, int laneNumber)
     {
