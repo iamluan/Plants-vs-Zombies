@@ -3,8 +3,10 @@ package controller;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -66,6 +68,39 @@ public class GamePlay {
     private volatile int spawnedZombies = 0;
     public static double numberOfZombiesKilled = 0;
     public static ArrayList<Timeline> animationTimelines;
+    public ArrayList<PlantCard> plantCards = new ArrayList<>();
+
+    public void startAnimations()
+    {
+        synchronized (allPlants) {
+            Iterator<Plant> i = allPlants.iterator();
+            while (i.hasNext()) {
+                Plant p = i.next();
+                p.drawImage(lawn_grid);
+                p.act(GamePlayRoot);
+            }
+        }
+        /*synchronized (allMowers) {
+            Iterator<LawnMower> i = allMowers.iterator();
+            while (i.hasNext()) {
+                LawnMower l = i.next();
+                l.makeImage(GamePlayRoot);
+                l.checkZombie();
+            }
+        }*/
+        synchronized (allZombies)
+        {
+            Iterator<Zombie> i = allZombies.iterator();
+            while(i.hasNext())
+            {
+                Zombie z = i.next();
+                z.drawImage(GamePlayRoot);
+                z.moveZombie();
+            }
+        }
+        //numZombiesKilled = l.getTotalZombies()*timeElapsed;
+        progressBar.setProgress(timeElapsed);
+    }
 
 
     public void initialize() throws Exception {
@@ -84,27 +119,85 @@ public class GamePlay {
         allZombies = Collections.synchronizedList(new ArrayList<Zombie>());
         allPlants = Collections.synchronizedList(new ArrayList<Plant>());
 
+        startAnimations();
     }
+
 
     @FXML
     void loadGameMenu(MouseEvent event) throws IOException {
     }
 
+    // put the selected plant in lawn
+    public void plants(int type, int x, int y, int col, int row ){
+        Plant p;
+        switch (type){
+            case 1:
+                p = new Sunflower(x, y, col, row);
+                allPlants.add(p);
+                p.drawImage(lawn_grid);
+                p.act(lawn_grid);
+                break;
+            case 2:
+                p = new Peashooter(x, y, col, row);
+                allPlants.add(p);
+                p.drawImage(lawn_grid);
+                p.act(lawn_grid);
+        }
+
+    }
 
     @FXML
     void getGridPosition(MouseEvent event) throws IOException {
+        Node source = (Node) event.getSource();
+        Integer colIndex = lawn_grid.getColumnIndex(source);
+        Integer rowIndex = lawn_grid.getRowIndex(source);
+
+        for(PlantCard plantCard : plantCards){
+            if(plantCard.getStatus()){
+                if(colIndex != null && rowIndex != null){
+                    boolean flag = true;
+                    synchronized (allPlants){
+                        Iterator<Plant> plantIterator = allPlants.iterator();
+                        while (plantIterator.hasNext()){
+                            Plant plant = plantIterator.next();
+                            if(plant.getCol() == colIndex && plant.getRow() == rowIndex){
+                                flag = false;
+                            }
+                        }
+                    }
+                    if(flag && sunScore >= plantCard.getCost()){
+                        plants(plantCard.getType(),
+                                (int) (source.getLayoutX() + source.getParent().getLayoutX()),
+                                (int) (source.getLayoutY() + source.getParent().getLayoutY()),
+                                colIndex, rowIndex);
+                        updateSunScore((-1) * plantCard.getCost());
+                    }
+                }
+
+            }
+        }
+
     }
 
     /**
      *   Initialize all the data in the game screen
      */
-    @FXML
+    public void createPlantCards(){
+        PlantCard sunflowerCard = new PlantCard(24, 79,
+                "resource/image/sunflowerCard.png",97,58,50, 1, GamePlayRoot);
+
+        PlantCard peashooterCard = new PlantCard(24, 147,
+                "resource/image/peashooterCard.png",97,58,100, 2, GamePlayRoot);
+
+        plantCards.add(sunflowerCard);
+        plantCards.add(peashooterCard);
+    }
+
     public void createGame(){
         animationTimelines = new ArrayList<Timeline>();
         sunScoreLabelControl.setText(String.valueOf(sunScore));
-        PlantCard.displayPlantCard(GamePlayRoot);
+        createPlantCards();
         Random rand = new Random();
-        startAnimations(rand);
         createFallingSuns(rand);
         zombieGenerator(rand, 2);
     }
@@ -144,16 +237,11 @@ public class GamePlay {
         zombie.drawImage(pane);
         GamePlay.allZombies.add(zombie);
         zombie.moveZombie();
-        System.out.println("Zombie has spawned");
     }
 
     public static void updateSunScore(int numOfSunAdded) {
         sunScore += numOfSunAdded;
         getSunScoreLabel().setText(Integer.toString(sunScore));
-    }
-
-    public void updateSpawnedZombie() {
-        this.spawnedZombies +=1 ;
     }
 
     public static Label getSunScoreLabel() {
@@ -167,33 +255,19 @@ public class GamePlay {
 
     // generate falling suns
     public void createFallingSuns(Random rand){
-        Timeline fallingSuns= new Timeline(new KeyFrame(Duration.seconds(2), actionEvent -> { //7secs
+        Timeline fallingSuns= new Timeline(new KeyFrame(Duration.seconds(7), actionEvent -> {
             Sun s = new Sun(rand.nextInt(850), 0, true);
             s.drawImage(GamePlayRoot);
             s.dropSun();
         }));
         fallingSuns.setCycleCount(Timeline.INDEFINITE);
         fallingSuns.play();
-        sunTimeline = fallingSuns;
         animationTimelines.add(fallingSuns);
-        System.out.println("Sun was created");
-    }
-    public void startAnimations(Random rand) {
-        synchronized (allPlants) {
-            Iterator<Plant> i = allPlants.iterator();
-        }
-        synchronized (allZombies)
-        {
-            Iterator<Zombie> i = allZombies.iterator();
-            while(i.hasNext())
-            {
-                Zombie z = i.next();
-                z.drawImage(GamePlayRoot);
-                z.moveZombie();
-            }
-        }
-        System.out.println("Animation has started");
     }
 
-
+    public void endGame(){
+        for(Timeline timeline : animationTimelines){
+            timeline.stop();
+        }
+    }
 }

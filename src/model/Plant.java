@@ -38,5 +38,13 @@ public class Plant extends GameElements {
         }
     }
 
+    public int getCol(){
+        return col;
+    }
+
+    public int getRow(){
+        return row;
+    }
+
     public void Eaten(){}
 }

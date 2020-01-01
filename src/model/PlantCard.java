@@ -11,67 +11,61 @@ import java.util.HashMap;
 public class PlantCard extends GameElements {
 
     private int cost;
-    private String type;
     private static ImageView selectedBorder;
-    private int isSelected = 0; //
-    private boolean isDisabled = false;
+    private static int type = -1; //
+    private boolean isSelected = false;
     private int coolDownTime;
+    private Pane pane;
 
-
-
-
-
-    public PlantCard(int x, int y, String path, int width, int height, int cost, String type) {
+    public PlantCard(int x, int y, String path, int width, int height, int cost, int type, Pane pane) {
         super(x, y, path, width, height);
         this.cost = cost;
         this.type = type;
-        if(type.equals("sunflower"))
+        this.pane = pane;
+
+        if(type == 1)
             coolDownTime = 5000;
-        else if(type.equals("peashooter"))
+        else if(type == 2)
             coolDownTime = 6000;
+
+        super.drawImage(pane);
+
+        img.setOnMouseClicked(event -> {
+            isSelected = true;
+            setSelectedBorderOn(type, pane);
+            event.consume();
+        });
     }
 
+    public boolean getStatus(){
+        return isSelected;
+    }
 
+    public int getCost(){
+        return this.cost;
+    }
 
-    public static void displayPlantCard(Pane pane){
-        PlantCard sunflowerCard = new PlantCard(24, 79, "resource/image/sunflowerCard.png",97,58,50, "sunflower");
-        sunflowerCard.drawImage(pane);
-        sunflowerCard.img.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                setSelectedBorderOn("sunflower");
-                event.consume();
-            }
-        });
-        PlantCard peashooterCard = new PlantCard(24, 147,"resource/image/peashooterCard.png",97,58,100, "peashooter");
-        peashooterCard.drawImage(pane);
-        peashooterCard.img.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                setSelectedBorderOn("sunflower");
-                event.consume();
-            }
-        });
+    public int getType(){
+        return type;
+    }
 
-        selectedBorder = new ImageView(new Image("resource/image/selectedCardBorder.png",110.0,72.0,false,false));
+    public void setSelectedBorderOn(int type, Pane pane) {
+        selectedBorder = new ImageView(new Image("resource/image/selectedCardBorder.png",
+                110.0,72.0,false,false));
         pane.getChildren().add(selectedBorder);
         selectedBorder.setVisible(false);
         selectedBorder.setDisable(true);
-    }
-
-
-    public static void setSelectedBorderOn(String type) {
-        if (type.equals("sunflower")){
+        if (type == 1){
             selectedBorder.setX(24 - 5);
             selectedBorder.setY(79 - 5);
-        } else if (type.equals("peashooter")) {
+        } else if (type == 2) {
             selectedBorder.setX(24 - 5);
             selectedBorder.setY(147 - 5);
         }
         selectedBorder.setVisible(true);
     }
 
-    public static void setSelectedBorderOff() {
+    public void setSelectedBorderOff() {
         selectedBorder.setVisible(false);
     }
 
