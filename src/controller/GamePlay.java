@@ -74,7 +74,9 @@ public class GamePlay {
 
 
 
-
+    /**
+     *   Initialize all the data in the game screen
+     */
     public void createGame(){
         animationTimelines = new ArrayList<Timeline>();
         sunScoreLabelControl.setText(String.valueOf(sunScore));
@@ -193,9 +195,7 @@ public class GamePlay {
 
     }
 
-    /**
-     *   Initialize all the data in the game screen
-     */
+
     public void createPlantCards(){
         PlantCard sunflowerCard = new PlantCard(24, 79,
                 "resource/image/sunflowerCard.png",97,58,50, 1, GamePlayRoot);
