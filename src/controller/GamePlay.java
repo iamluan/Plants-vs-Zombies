@@ -86,7 +86,6 @@ public class GamePlay {
 
     }
 
-
     @FXML
     void loadGameMenu(MouseEvent event) throws IOException {
     }
@@ -99,11 +98,13 @@ public class GamePlay {
     /**
      *   Initialize all the data in the game screen
      */
+    @FXML
     public void createGame(){
         animationTimelines = new ArrayList<Timeline>();
         sunScoreLabelControl.setText(String.valueOf(sunScore));
         PlantCard.displayPlantCard(GamePlayRoot);
         Random rand = new Random();
+        startAnimations(rand);
         createFallingSuns(rand);
         zombieGenerator(rand, 2);
     }
@@ -143,11 +144,16 @@ public class GamePlay {
         zombie.drawImage(pane);
         GamePlay.allZombies.add(zombie);
         zombie.moveZombie();
+        System.out.println("Zombie has spawned");
     }
 
     public static void updateSunScore(int numOfSunAdded) {
         sunScore += numOfSunAdded;
         getSunScoreLabel().setText(Integer.toString(sunScore));
+    }
+
+    public void updateSpawnedZombie() {
+        this.spawnedZombies +=1 ;
     }
 
     public static Label getSunScoreLabel() {
@@ -161,14 +167,32 @@ public class GamePlay {
 
     // generate falling suns
     public void createFallingSuns(Random rand){
-        Timeline fallingSuns= new Timeline(new KeyFrame(Duration.seconds(7), actionEvent -> {
+        Timeline fallingSuns= new Timeline(new KeyFrame(Duration.seconds(2), actionEvent -> { //7secs
             Sun s = new Sun(rand.nextInt(850), 0, true);
             s.drawImage(GamePlayRoot);
             s.dropSun();
         }));
         fallingSuns.setCycleCount(Timeline.INDEFINITE);
         fallingSuns.play();
+        sunTimeline = fallingSuns;
         animationTimelines.add(fallingSuns);
+        System.out.println("Sun was created");
+    }
+    public void startAnimations(Random rand) {
+        synchronized (allPlants) {
+            Iterator<Plant> i = allPlants.iterator();
+        }
+        synchronized (allZombies)
+        {
+            Iterator<Zombie> i = allZombies.iterator();
+            while(i.hasNext())
+            {
+                Zombie z = i.next();
+                z.drawImage(GamePlayRoot);
+                z.moveZombie();
+            }
+        }
+        System.out.println("Animation has started");
     }
 
 

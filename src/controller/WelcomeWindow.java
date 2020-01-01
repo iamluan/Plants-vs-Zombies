@@ -40,12 +40,6 @@ public class WelcomeWindow {
         AnchorPane root = loader.load();
         GamePlay controller = loader.<GamePlay>getController();
         controller.createGame();
-        Main.primaryStage.setScene(new Scene(root));
-        Main.primaryStage.centerOnScreen();
-        Main.primaryStage.setOnCloseRequest(t -> {
-            Platform.exit();
-            System.exit(0);
-        });
         mainRoot.getChildren().setAll(root);
     }
 
