@@ -17,7 +17,7 @@ public abstract class Zombie extends GameElements {
     public int damage;
     public int lane;
     public int x, y;
-    public int deltaX;
+    public int deltaX = -1;
     public transient Timeline zombieAnimation;
     public transient ImageView image;
     public boolean isMoving = true;
@@ -36,16 +36,6 @@ public abstract class Zombie extends GameElements {
     }
 
 
-    public void drawImage(Pane pane){
-        ImageView img = new ImageView();
-        Image im=new Image(imagePath,68,118,false,false);
-        img.setImage(im);
-        img.setX(x);
-        img.setY(y);
-        pane.getChildren().add(img);
-    }
-
-
     public void moveZombie() {
         Timeline animation = new Timeline(new KeyFrame(Duration.millis(70), e -> zombieWalk()));
         animation.setCycleCount(Timeline.INDEFINITE);
@@ -55,12 +45,10 @@ public abstract class Zombie extends GameElements {
     }
 
     public void zombieWalk() {
-        if(getX()>220 && this.health>0) // If the zombie did't reach the house and is still alive
-        {
-            //Test deltaX
-            deltaX = -1;
+        if(getX()>220 && this.health>0) { // If the zombie did't reach the house and is still alive
             //Update the location of the zombie
             setX(getX() + deltaX);
+            checkReachedHouse();
         }
     }
 
@@ -72,6 +60,21 @@ public abstract class Zombie extends GameElements {
             mediaPlayer.setAutoPlay(true);
             mediaPlayer.play();
         }
+    }
+
+    public void chompingPlantSound() {
+        String chompFile = "src/resource/sound/chomp.wav";
+        Media chomp = new Media(new File(chompFile).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(chomp);
+        mediaPlayer.setAutoPlay(true);
+        mediaPlayer.setStartTime(Duration.seconds(0));
+        mediaPlayer.setStopTime(Duration.seconds(1));
+        mediaPlayer.setCycleCount(1);
+        mediaPlayer.play();
+    }
+
+    public Timeline getZombieAnimation() {
+        return zombieAnimation;
     }
 
     public int getHealth() {

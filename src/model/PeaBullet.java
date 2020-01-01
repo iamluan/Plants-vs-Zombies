@@ -24,7 +24,7 @@ public class PeaBullet extends GameElements {
         this.plantPos = plantPos;
         flag = false;
     }
-
+    /**
     public void shoot(Pane pane){
         Timeline shooting = new Timeline(new KeyFrame(Duration.seconds(2), event -> {
             drawImage(pane);
@@ -56,5 +56,5 @@ public class PeaBullet extends GameElements {
             }
         }
 
-    }
+    }*/
 }

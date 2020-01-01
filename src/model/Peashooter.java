@@ -22,7 +22,7 @@ public class Peashooter extends Plant  {
     public void act(Pane pane){
         Timeline shoot = new Timeline(new KeyFrame(Duration.seconds(2), actionEvent -> {
             PeaBullet peaBullet = new PeaBullet(x, y, getX(), lane);
-            peaBullet.shoot(pane);
+            //peaBullet.shoot(pane);
         }));
         shoot.setCycleCount(Timeline.INDEFINITE);
         shoot.play();
