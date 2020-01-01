@@ -40,10 +40,11 @@ public class PeaBullet extends GameElements {
     }
 
     public void collideZombie(){
-        Iterator<Zombie> thZ = GamePlay.allZombies.iterator();
-        while (thZ.hasNext()){
-            if(lane == thZ.getLane() && !flag){
-                thZ.setHp(thZ.getHp() - 1);
+        Iterator<Zombie> zombies = GamePlay.allZombies.iterator();
+        while (zombies.hasNext()){
+            Zombie zombie = zombies.next();
+            if(lane == zombie.getLane() && !flag){
+                zombie.setHp(zombie.getHp() - 1);
                 img.setVisible(false);
                 img.setDisable(true);
                 peaAnimation.stop();

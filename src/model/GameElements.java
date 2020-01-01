@@ -1,4 +1,5 @@
 package model;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -17,7 +18,6 @@ public abstract class GameElements{
         this.path=path;
         this.width=width;
         this.height=height;
-
     }
 
     public void drawImage(Pane pane){
@@ -28,6 +28,7 @@ public abstract class GameElements{
         img.setY(y);
         pane.getChildren().add(img);
     }
+
     public int getX(){
         return this.x;
     }
