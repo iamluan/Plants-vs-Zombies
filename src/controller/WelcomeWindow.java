@@ -39,6 +39,7 @@ public class WelcomeWindow {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../view/GamePlay.fxml"));
         AnchorPane root = loader.load();
         GamePlay controller = loader.<GamePlay>getController();
+        controller.createGame();
         Main.primaryStage.setScene(new Scene(root));
         Main.primaryStage.centerOnScreen();
         Main.primaryStage.setOnCloseRequest(t -> {
