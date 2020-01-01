@@ -14,8 +14,7 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 import javafx.util.Duration;
-import model.NormalZombie;
-import model.Zombie;
+import model.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +43,7 @@ public class GamePlay {
     /**
      * Set lanes in the yard
      */
-    private static int sunScore;
+    private static int sunScore = 75;
     public static final int LANE1 = 50;
     public static final int LANE2 = 150;
     public static final int LANE3 = 250;
@@ -83,8 +82,7 @@ public class GamePlay {
         gameStatus = true;
         sunScoreLabelControl = sunScoreLabel;
         allZombies = Collections.synchronizedList(new ArrayList<Zombie>());
-        //Wait for update
-        //allPlants = Collections.synchronizedList(new ArrayList<Plant>());
+        allPlants = Collections.synchronizedList(new ArrayList<Plant>());
 
     }
 
@@ -119,6 +117,17 @@ public class GamePlay {
         }));
     }
 
+    /**
+     *   Initialize all the data in the game screen
+     */
+    public void createGame(){
+        animationTimelines = new ArrayList<Timeline>();
+        sunScoreLabelControl.setText(String.valueOf(sunScore));
+        PlantCard.displayPlantCard(GamePlayRoot);
+        Random rand = new Random();
+        createFallingSuns(rand);
+    }
+
     public static void spawnNormalZombie(Pane pane, int lane, int laneNumber)
     {
         NormalZombie zombie = new NormalZombie(1024, lane, laneNumber); // The x location of the outer right of the yard is 1024
@@ -139,6 +148,18 @@ public class GamePlay {
     public static void removeZombie(Zombie zombie){
         zombie.image.setVisible(false);
         allZombies.remove(zombie);
+    }
+
+    // generate falling suns
+    public void createFallingSuns(Random rand){
+        Timeline fallingSuns= new Timeline(new KeyFrame(Duration.seconds(7), actionEvent -> {
+            Sun s = new Sun(rand.nextInt(850), 0, true);
+            s.drawImage(GamePlayRoot);
+            s.dropSun();
+        }));
+        fallingSuns.setCycleCount(Timeline.INDEFINITE);
+        fallingSuns.play();
+        animationTimelines.add(fallingSuns);
     }
 
 
