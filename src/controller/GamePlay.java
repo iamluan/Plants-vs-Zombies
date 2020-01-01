@@ -68,7 +68,7 @@ public class GamePlay {
     private volatile int spawnedZombies = 0;
     public static double numberOfZombiesKilled = 0;
     public static ArrayList<Timeline> animationTimelines;
-    public ArrayList<PlantCard> plantCards;
+    public ArrayList<PlantCard> plantCards = new ArrayList<>();
 
     public void startAnimations()
     {
@@ -185,11 +185,9 @@ public class GamePlay {
     public void createPlantCards(){
         PlantCard sunflowerCard = new PlantCard(24, 79,
                 "resource/image/sunflowerCard.png",97,58,50, 1, GamePlayRoot);
-        sunflowerCard.drawImage(GamePlayRoot);
 
         PlantCard peashooterCard = new PlantCard(24, 147,
                 "resource/image/peashooterCard.png",97,58,100, 2, GamePlayRoot);
-        peashooterCard.drawImage(GamePlayRoot);
 
         plantCards.add(sunflowerCard);
         plantCards.add(peashooterCard);

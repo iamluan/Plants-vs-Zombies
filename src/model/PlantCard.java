@@ -28,6 +28,8 @@ public class PlantCard extends GameElements {
         else if(type == 2)
             coolDownTime = 6000;
 
+        super.drawImage(pane);
+
         img.setOnMouseClicked(event -> {
             isSelected = true;
             setSelectedBorderOn(type, pane);
