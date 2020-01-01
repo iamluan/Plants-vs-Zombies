@@ -15,6 +15,7 @@ import javafx.scene.media.MediaPlayer;
 
 import javafx.util.Duration;
 import model.NormalZombie;
+import model.Sun;
 import model.Zombie;
 
 import java.io.File;
@@ -139,6 +140,18 @@ public class GamePlay {
     public static void removeZombie(Zombie zombie){
         zombie.image.setVisible(false);
         allZombies.remove(zombie);
+    }
+
+    // generate falling suns
+    public void createFallingSuns(Random rand){
+        Timeline fallingSuns= new Timeline(new KeyFrame(Duration.seconds(7), actionEvent -> {
+            Sun s = new Sun(rand.nextInt(850), 0, true);
+            s.drawImage(GamePlayRoot);
+            s.dropSun();
+        }));
+        fallingSuns.setCycleCount(Timeline.INDEFINITE);
+        fallingSuns.play();
+        animationTimelines.add(fallingSuns);
     }
 
 

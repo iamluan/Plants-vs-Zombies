@@ -44,7 +44,7 @@ public class PeaBullet extends GameElements {
         while (zombies.hasNext()){
             Zombie zombie = zombies.next();
             if(lane == zombie.getLane() && !flag){
-                zombie.setHp(zombie.getHp() - 1);
+                zombie.setHealth(zombie.getHealth() - 1);
                 img.setVisible(false);
                 img.setDisable(true);
                 peaAnimation.stop();
