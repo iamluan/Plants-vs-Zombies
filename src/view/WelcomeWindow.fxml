@@ -10,10 +10,19 @@
             <Image url="@../resource/image/Menu.jpg" />
          </image>
       </ImageView>
-      <ImageView fx:id="playButton" fitHeight="56.0" fitWidth="187.0" layoutX="441.0" layoutY="470.0" onMouseClicked="#playButton" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="playButton" fitHeight="56.0" fitWidth="187.0" layoutX="152.0" layoutY="464.0" onMouseClicked="#playButton" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../resource/image/game_play_button.png" />
          </image>
       </ImageView>
+      <ImageView fitHeight="78.0" fitWidth="156.0" layoutX="721.0" layoutY="453.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../resource/image/settings_button.png" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="88.0" fitWidth="156.0" layoutX="435.0" layoutY="448.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../resource/image/load_button.png" />
+         </image></ImageView>
    </children>
 </AnchorPane>

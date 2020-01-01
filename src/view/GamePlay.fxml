@@ -23,9 +23,9 @@
             <Font name="Dyuthi" size="35.0" />
          </font>
       </Label>
-      <ImageView fx:id="GameMenuLoaderButton" fitHeight="91.0" fitWidth="150.0" layoutX="2.0" layoutY="505.0" onMouseClicked="#loadGameMenu" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="GameMenuLoaderButton" fitHeight="84.0" fitWidth="115.0" layoutX="37.0" layoutY="505.0" onMouseClicked="#loadGameMenu" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../resource/image/gamemenuLoader.png" />
+            <Image url="@../resource/image/menu_button.png" />
          </image>
       </ImageView>
       <ImageView fitHeight="50.0" fitWidth="298.0" layoutX="166.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
