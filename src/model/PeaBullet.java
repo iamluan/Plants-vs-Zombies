@@ -13,16 +13,14 @@ import java.util.Iterator;
 
 public class PeaBullet extends GameElements {
 
-    private int lane;
     private int plantPos;
-    private Timeline peaAnimation;
-    private boolean flag;
+    private Timeline soar;
+    private Zombie target;
 
-    public PeaBullet(int x, int y, int plantPos, int lane ) {
+    public PeaBullet(int x, int y, int plantPos, Zombie target ) {
         super(x, y, "resource/image/Pea.png", 20, 20);
-        this.lane = lane;
         this.plantPos = plantPos;
-        flag = false;
+        this.target = target;
     }
 
     public void drawImage(Pane pane){
@@ -30,37 +28,36 @@ public class PeaBullet extends GameElements {
     }
 
     public void shoot(){
-        Timeline shooting = new Timeline(new KeyFrame(Duration.millis(5), event -> {
+        soar = new Timeline(new KeyFrame(Duration.millis(3), event -> {
             if(x <= 1050) setX(getX() + 1);
             if(x <= plantPos) img.setVisible(false);
             else img.setVisible(true);
             collideZombie();
         }));
-        shooting.setCycleCount(Timeline.INDEFINITE);
-        shooting.play();
-        peaAnimation = shooting;
-        GamePlay.animationTimelines.add(shooting);
+        soar.setCycleCount(Timeline.INDEFINITE);
+        soar.play();
+
+        GamePlay.animationTimelines.add(soar);
     }
 
     public void collideZombie(){
-        synchronized (GamePlay.allZombies){
-            Iterator<Zombie> zombies = GamePlay.allZombies.iterator();
-            while (zombies.hasNext()) {
-                Zombie zombie = zombies.next();
-                if (lane == zombie.getLane() && Math.abs(zombie.getX()-getX())<=3 ) {
-                    zombie.setHealth(zombie.getHealth() - 1);
-                    img.setVisible(false);
-                    img.setDisable(true);
-                    peaAnimation.stop();
-                    break;
-                /*String splatFile = "resource/sound/shoot.wav";
-                Media splat = new Media(new File(splatFile).toURI().toString());
-                MediaPlayer mediaPlayer = new MediaPlayer(splat);
-                mediaPlayer.setAutoPlay(true);
-                mediaPlayer.play();*/
-                }
-            }
+        if(x >= target.getX()) {
+            target.setHealth(target.getHealth() - 1);
+            soar.stop();
+            img.setVisible(false);
+            img.setDisable(true);
         }
+
+        /*            if(Math.abs(zombie.getX()-getX())<=3) {
+
+                        peaAnimation.stop();
+                    }
+
+                    /*String splatFile = "resource/sound/shoot.wav";
+                    Media splat = new Media(new File(splatFile).toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(splat);
+                    mediaPlayer.setAutoPlay(true);
+                    mediaPlayer.play();*/
 
     }
 }

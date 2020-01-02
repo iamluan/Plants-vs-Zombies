@@ -19,14 +19,11 @@ public abstract class Zombie extends GameElements {
     public int lane;
     public int x, y;
     public int deltaX = -1;
-    public transient Timeline zombieAnimation;
-    public transient Timeline chomping;
-    public transient ImageView image;
+    public Timeline zombieAnimation;
+    public Timeline chomping;
+    public ImageView image;
     public boolean isCollidedPlant = true;
     public boolean isEating = false;
-    public static int numberOfZombie = 0;
-    public String imagePath = null;
-
 
     public Zombie(int x, int y, String imagePath, int health, int damage, int lane, int width, int height) {
         super(x, y, imagePath, width, height);
@@ -50,7 +47,8 @@ public abstract class Zombie extends GameElements {
             //Update the location of the zombie
             setX(getX() + deltaX);
             try{
-            eatPlant();}
+                eatPlant();
+            }
             catch (Exception e) {
                 System.out.println(e);
             }
@@ -61,12 +59,14 @@ public abstract class Zombie extends GameElements {
 
     public void checkReachedHouse() {
         //System.out.println(getX());
-        if (getX() <= 220) { //reach the house
+        if (getX() < 220) { //reach the house
             String eatingBrainFile = "src/resource/sound/eatingbrain.wav";
             Media eatingBrain = new Media(new File(eatingBrainFile).toURI().toString());
             MediaPlayer mediaPlayer = new MediaPlayer(eatingBrain);
             mediaPlayer.setAutoPlay(true);
             mediaPlayer.play();
+
+            GamePlay.endGame();
         }
     }
 
@@ -160,17 +160,12 @@ public abstract class Zombie extends GameElements {
             {
                 this.chomping.stop();
             }
-            for(int i = 0; i<GamePlay.allZombies.size(); i++)
-            {
-                if(this == GamePlay.allZombies.get(i)) {
-                    GamePlay.allZombies.remove(i);
-                }
-            }
+            GamePlay.allZombies.remove(this);
         }
-        if (health <= 7) {
+        /*if (health <= 7) {
             img.setImage(new Image("src/resource/image/normalzombie.gif", (double) 68,(double) 118,false,false));
             this.width=68;
             this.height=118;
-        }
+        }*/
     }
 }
