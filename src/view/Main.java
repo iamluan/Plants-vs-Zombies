@@ -24,7 +24,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         Parent welcomeWindow = FXMLLoader.load(getClass().getResource("WelcomeWindow.fxml"));
-        //addBackgroundMusic();
+        addBackgroundMusic();
         primaryStage.setScene(new Scene(welcomeWindow,1024, 600));
         primaryStage.setResizable(false);
         primaryStage.setTitle("Plant vs Zombies");

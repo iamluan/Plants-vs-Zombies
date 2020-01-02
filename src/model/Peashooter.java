@@ -17,7 +17,7 @@ public class Peashooter extends Plant  {
 
     public Peashooter(int x, int y, int col, int row) {
         super(x, y, "resource/image/pea_shooter.gif", 75, 75, 100, col, row);
-        this.lane = row;
+        this.lane = col;
     }
 
     public void act(Pane pane){
@@ -27,7 +27,8 @@ public class Peashooter extends Plant  {
                 Zombie zombie = zombies.next();
                 if(zombie.getLane() == this.lane) {
                     PeaBullet peaBullet = new PeaBullet(x, y, getX(), lane);
-                    peaBullet.shoot(pane);
+                    peaBullet.drawImage(pane);
+                    peaBullet.shoot();
                 }
             }
         }));
@@ -38,8 +39,10 @@ public class Peashooter extends Plant  {
     }
 
     public void eaten(){
-        this.shooting.stop();
-        img.setVisible(false);
-        img.setDisable(true);
+        if(hp <= 0) {
+            this.shooting.stop();
+            img.setVisible(false);
+            img.setDisable(true);
+        }
     }
 }

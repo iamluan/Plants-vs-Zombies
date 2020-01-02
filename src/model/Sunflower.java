@@ -9,16 +9,16 @@ import javafx.util.Duration;
 public class Sunflower extends Plant {
 
     protected Timeline sunProducer;
+
     public Sunflower(int x, int y, int col, int row) {
         super(x, y, "resource/image/sun_flower.gif", 75, 75, 100, col, row);
     }
 
     public void act(Pane pane){
-        Timeline sunProducer = new Timeline(new KeyFrame(Duration.seconds(10), event -> {
-            if(getHp()>0) {
-                Sun s = new Sun(getX() + 20, getY() + 40, false);
+        Timeline sunProducer = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
+                Sun s = new Sun(getX(), getY(), false);
+                System.out.println(getX() + "," + getY());
                 s.drawImage(pane);
-            }
         }));
         sunProducer.setCycleCount(Timeline.INDEFINITE);
         sunProducer.play();
@@ -27,9 +27,11 @@ public class Sunflower extends Plant {
     }
 
     public void eaten(){
-        sunProducer.stop();
-        img.setVisible(false);
-        img.setDisable(true);
+        if(hp <= 0) {
+            sunProducer.stop();
+            img.setVisible(false);
+            img.setDisable(true);
+        }
     }
 
 }

@@ -46,5 +46,5 @@ public class Plant extends GameElements {
         return row;
     }
 
-    public void Eaten(){}
+    public void eaten(){}
 }

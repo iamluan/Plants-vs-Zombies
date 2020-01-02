@@ -5,8 +5,6 @@ import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -37,56 +35,34 @@ public class GamePlay {
     @FXML
     private ImageView GameMenuLoaderButton;
     @FXML
-    private ProgressBar progressBar;
-    @FXML
     private int levelNumber;
     @FXML
     private GridPane lawn_grid;
     /**
      * Set lanes in the yard
      */
-    private static int sunScore = 75;
+    private static int sunScore = 50;
     public static final int LANE1 = 50;
     public static final int LANE2 = 150;
     public static final int LANE3 = 250;
     public static final int LANE4 = 350;
     public static final int LANE5 = 450;
     public static boolean gameStatus;
-    public static Timeline sunTimeline;
     public static Timeline spawnZombieTimeline;
-    //public static Timeline spZ2;
     private static Label sunScoreLabelControl;
-    private static double timeElapsed;
-
     public static List allZombies;
     public static List allPlants;
-    //public static List allMowers;
-    public static ArrayList<Integer> zombieList1;
-    public static ArrayList<Integer> zombieList2;
-
-
-    private volatile int spawnedZombies = 0;
-    public static double numberOfZombiesKilled = 0;
     public static ArrayList<Timeline> animationTimelines;
-    public ArrayList<PlantCard> plantCards = new ArrayList<>();
-
-
-
-
-
     /**
      *   Initialize all the data in the game screen
      */
     public void createGame(){
+        Random rand = new Random();
         animationTimelines = new ArrayList<Timeline>();
         sunScoreLabelControl.setText(String.valueOf(sunScore));
-        //createPlantCards();
-
         SidebarElement.getSidebarElements(GamePlayRoot);
-
-        Random rand = new Random();
         createFallingSuns(rand);
-        zombieGenerator(rand, 5);
+        zombieGenerator(rand, 10);
         startAnimations();
     }
 
@@ -96,30 +72,22 @@ public class GamePlay {
             Iterator<Plant> i = allPlants.iterator();
             while (i.hasNext()) {
                 Plant p = i.next();
-                p.drawImage(lawn_grid);
                 p.act(GamePlayRoot);
+                p.eaten();
             }
         }
-        /*synchronized (allMowers) {
-            Iterator<LawnMower> i = allMowers.iterator();
-            while (i.hasNext()) {
-                LawnMower l = i.next();
-                l.makeImage(GamePlayRoot);
-                l.checkZombie();
-            }
-        }*/
+
         synchronized (allZombies)
         {
             Iterator<Zombie> i = allZombies.iterator();
             while(i.hasNext())
             {
                 Zombie z = i.next();
-                z.drawImage(GamePlayRoot);
-                z.moveZombie();
+                if(z.checkReachedHouse()){
+                    endGame();
+                }
             }
         }
-        //numZombiesKilled = l.getTotalZombies()*timeElapsed;
-        progressBar.setProgress(timeElapsed);
     }
 
 
@@ -133,26 +101,17 @@ public class GamePlay {
         mediaPlayer.setStopTime(Duration.seconds(5));
         mediaPlayer.play();
 
-
         gameStatus = true;
         sunScoreLabelControl = sunScoreLabel;
         allZombies = Collections.synchronizedList(new ArrayList<Zombie>());
         allPlants = Collections.synchronizedList(new ArrayList<Plant>());
-
     }
-
-
-    @FXML
-    void loadGameMenu(MouseEvent event) throws IOException {
-    }
-
-    // put the selected plant in lawn
-
     @FXML
     void getGridPosition(MouseEvent event) throws IOException {
         Node source = (Node) event.getSource();
         Integer colIndex = lawn_grid.getColumnIndex(source);
         Integer rowIndex = lawn_grid.getRowIndex(source);
+
         if(SidebarElement.getCardSelected() != -1){
             if(colIndex != null && rowIndex != null){
                 boolean flag = true;
@@ -170,6 +129,8 @@ public class GamePlay {
                             (int) (source.getLayoutX() + source.getParent().getLayoutX()),
                             (int) (source.getLayoutY() + source.getParent().getLayoutY()),
                             colIndex, rowIndex);
+                    System.out.println((source.getLayoutX() + source.getParent().getLayoutX()) + "," +
+                            (source.getLayoutY() + source.getParent().getLayoutY()));
                     updateSunScore((-1) * SidebarElement.getElement(SidebarElement.getCardSelected()).getCost());
                     SidebarElement.getElement(SidebarElement.getCardSelected()).setDisabledOn(GamePlayRoot);
                 }
@@ -186,34 +147,16 @@ public class GamePlay {
                 p = new Sunflower(x, y, col, row);
                 allPlants.add(p);
                 p.drawImage(lawn_grid);
-                p.act(lawn_grid);
+                p.act(GamePlayRoot);
                 break;
             case 2:
                 p = new Peashooter(x, y, col, row);
                 allPlants.add(p);
                 p.drawImage(lawn_grid);
-                p.act(lawn_grid);
                 break;
         }
 
     }
-
-
-    public void createPlantCards(){
-        PlantCard sunflowerCard = new PlantCard(24, 79,
-                "resource/image/sunflowerCard.png",97,58,50, 1, GamePlayRoot);
-
-        PlantCard peashooterCard = new PlantCard(24, 147,
-                "resource/image/peashooterCard.png",97,58,100, 2, GamePlayRoot);
-
-        sunflowerCard.drawImage(GamePlayRoot);
-        peashooterCard.drawImage(GamePlayRoot);
-
-        plantCards.add(sunflowerCard);
-        plantCards.add(peashooterCard);
-    }
-
-
     /**
      *
      * @param t : Time to spawn new zombie(by seconds)
@@ -235,6 +178,7 @@ public class GamePlay {
                 lane = LANE5;
 
             spawnNormalZombie(GamePlayRoot, lane, laneNumber);
+            ;
         }));
         spawnZombie.setCycleCount(Timeline.INDEFINITE);
         spawnZombie.play();
@@ -248,8 +192,8 @@ public class GamePlay {
     {
         NormalZombie zombie = new NormalZombie(1024, lane, laneNumber); // The x location of the outer right of the yard is 1024
         zombie.drawImage(pane);
-        GamePlay.allZombies.add(zombie);
         zombie.moveZombie();
+        GamePlay.allZombies.add(zombie);
     }
 
     public static void updateSunScore(int numOfSunAdded) {

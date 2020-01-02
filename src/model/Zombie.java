@@ -37,7 +37,7 @@ public abstract class Zombie extends GameElements {
 
 
     public void moveZombie() {
-        Timeline animation = new Timeline(new KeyFrame(Duration.millis(70), e -> zombieWalk()));
+        Timeline animation = new Timeline(new KeyFrame(Duration.millis(100), e -> zombieWalk()));
         animation.setCycleCount(Timeline.INDEFINITE);
         animation.play();
         this.zombieAnimation = animation;
@@ -48,19 +48,20 @@ public abstract class Zombie extends GameElements {
         if(getX()>220 && this.health>0) { // If the zombie did't reach the house and is still alive
             //Update the location of the zombie
             setX(getX() + deltaX);
-            //checkReachedHouse();
             //System.out.println("The zombie has moved");
         }
     }
 
-    public void checkReachedHouse() {
-        if (image.getX() <= 220) { //reach the house
+    public boolean checkReachedHouse() {
+        if (getX() <= 220) { //reach the house
             String eatingBrainFile = "file:resource/sound/eatingbrain.wav";
             Media eatingBrain = new Media(new File(eatingBrainFile).toURI().toString());
             MediaPlayer mediaPlayer = new MediaPlayer(eatingBrain);
             mediaPlayer.setAutoPlay(true);
             mediaPlayer.play();
+            return true;
         }
+        else return false;
     }
 
     public void chompingPlantSound() {

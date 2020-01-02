@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
@@ -23,24 +22,6 @@
             <Font name="Dyuthi" size="35.0" />
          </font>
       </Label>
-      <ImageView fx:id="GameMenuLoaderButton" fitHeight="84.0" fitWidth="115.0" layoutX="37.0" layoutY="505.0" onMouseClicked="#loadGameMenu" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../resource/image/menu_button.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="50.0" fitWidth="298.0" layoutX="166.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../resource/image/progressbar.png" />
-         </image>
-      </ImageView>
-      <ProgressBar fx:id="progressBar" layoutX="178.0" layoutY="25.0" prefHeight="20.0" prefWidth="277.0" progress="0.5">
-         <effect>
-            <ColorAdjust hue="1.0" />
-         </effect></ProgressBar>
-      <ImageView fitHeight="35.0" fitWidth="47.0" layoutX="436.0" layoutY="21.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../resource/image/Flag.png" />
-         </image></ImageView>
 
       <GridPane fx:id="lawn_grid" layoutX="322.0" layoutY="83.0" prefHeight="489.0" prefWidth="694.0">
         <columnConstraints>
