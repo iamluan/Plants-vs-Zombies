@@ -55,41 +55,6 @@ public class GamePlay {
     public static ArrayList<Timeline> animationTimelines;
     public ArrayList<PlantCard> plantCards = new ArrayList<>();
     public int spawnedZombies = 0;
-    /**
-     *   Initialize all the data in the game screen
-     */
-    public void createGame(){
-        Random rand = new Random();
-        animationTimelines = new ArrayList<Timeline>();
-        sunScoreLabelControl.setText(String.valueOf(sunScore));
-        SidebarElement.getSidebarElements(GamePlayRoot);
-        createFallingSuns(rand);
-        normalZombieGenerator(rand, 10);
-        coneHeadZombieGenerator(rand, 16);
-        bucketZombieGenerator(rand, 35);
-        startAnimations();
-    }
-
-    public void startAnimations()
-    {
-        synchronized (allPlants) {
-            Iterator<Plant> i = allPlants.iterator();
-            while (i.hasNext()) {
-                Plant p = i.next();
-                p.act(GamePlayRoot);
-                p.eaten();
-            }
-        }
-        synchronized (allZombies)
-        {
-            Iterator<Zombie> i = allZombies.iterator();
-            while(i.hasNext())
-            {
-                Zombie z = i.next();
-                z.moveZombie();
-            }
-        }
-    }
 
     public void initialize() throws Exception {
 
@@ -100,12 +65,29 @@ public class GamePlay {
         mediaPlayer.setStartTime(Duration.seconds(0));
         mediaPlayer.setStopTime(Duration.seconds(5));
         mediaPlayer.play();
-
-        gameStatus = true;
+        //gameStatus = true;
         sunScoreLabelControl = sunScoreLabel;
         allZombies = Collections.synchronizedList(new ArrayList<Zombie>());
         allPlants = Collections.synchronizedList(new ArrayList<Plant>());
+        animationTimelines = new ArrayList<Timeline>();
+        sunScoreLabelControl.setText(String.valueOf(sunScore));
+
+
+
     }
+
+    public void createGame(){
+
+        Random rand = new Random();
+
+        SidebarElement.getSidebarElements(GamePlayRoot);
+        createFallingSuns(rand);
+        normalZombieGenerator(rand, 10);
+        //coneHeadZombieGenerator(rand, 16);
+        //bucketZombieGenerator(rand, 35);
+        //startAnimations();
+    }
+
     @FXML
     void getGridPosition(MouseEvent event) throws IOException {
         Node source = (Node) event.getSource();
@@ -153,10 +135,7 @@ public class GamePlay {
                 break;
         }
     }
-    /**
-     *
-     * @param t : Time to spawn new zombie(by seconds)
-     */
+
     public void normalZombieGenerator(Random rand, double t) {
         Timeline spawnZombie = new Timeline(new KeyFrame(Duration.seconds(t), event -> {
             int lane;
@@ -179,6 +158,14 @@ public class GamePlay {
         spawnZombieTimeline = spawnZombie;
         animationTimelines.add(spawnZombie);
 
+    }
+
+    public static void spawnNormalZombie(Pane pane, int lane, int laneNumber)
+    {
+        NormalZombie zombie = new NormalZombie(1024, lane, laneNumber); // The x location of the outer right of the yard is 1024
+        zombie.drawImage(pane);
+        zombie.moveZombie();
+        GamePlay.allZombies.add(zombie);
     }
 
     public void coneHeadZombieGenerator(Random rand, double t) {
@@ -230,13 +217,7 @@ public class GamePlay {
     }
 
 
-    public static void spawnNormalZombie(Pane pane, int lane, int laneNumber)
-    {
-        NormalZombie zombie = new NormalZombie(1024, lane, laneNumber); // The x location of the outer right of the yard is 1024
-        zombie.drawImage(pane);
-        zombie.moveZombie();
-        GamePlay.allZombies.add(zombie);
-    }
+
 
     public static void spawnConeHeadZombie(Pane pane, int lane, int laneNumber)
     {
@@ -291,7 +272,7 @@ public class GamePlay {
         animationTimelines.add(fallingSuns);
     }
 
-    public void endGame(){
+    public static void endGame(){
         for(Timeline timeline : animationTimelines){
             timeline.stop();
         }
