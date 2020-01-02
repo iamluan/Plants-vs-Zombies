@@ -62,7 +62,7 @@ public class GamePlay {
         Random rand = new Random();
         animationTimelines = new ArrayList<Timeline>();
         sunScoreLabelControl.setText(String.valueOf(sunScore));
-        createPlantCards();
+        SidebarElement.getSidebarElements(GamePlayRoot);
         createFallingSuns(rand);
         normalZombieGenerator(rand, 10);
         coneHeadZombieGenerator(rand, 16);
@@ -76,8 +76,8 @@ public class GamePlay {
             Iterator<Plant> i = allPlants.iterator();
             while (i.hasNext()) {
                 Plant p = i.next();
-                p.drawImage(lawn_grid);
                 p.act(GamePlayRoot);
+                p.eaten();
             }
         }
         synchronized (allZombies)
@@ -110,32 +110,29 @@ public class GamePlay {
     @FXML
     void getGridPosition(MouseEvent event) throws IOException {
         Node source = (Node) event.getSource();
-
         Integer colIndex = lawn_grid.getColumnIndex(source);
         Integer rowIndex = lawn_grid.getRowIndex(source);
 
-        for (PlantCard plantCard : plantCards) {
-            if (plantCard.getStatus()) {
-                if (colIndex != null && rowIndex != null) {
-                    boolean flag = true;
-                    synchronized (allPlants) {
-                        Iterator<Plant> plantIterator = allPlants.iterator();
-                        while (plantIterator.hasNext()) {
-                            Plant plant = plantIterator.next();
-                            if (plant.getCol() == colIndex && plant.getRow() == rowIndex) {
-                                flag = false;
-                            }
+        if(SidebarElement.getCardSelected() != -1) {
+            if (colIndex != null && rowIndex != null) {
+                boolean flag = true;
+                synchronized (allPlants) {
+                    Iterator<Plant> plantIterator = allPlants.iterator();
+                    while (plantIterator.hasNext()) {
+                        Plant plant = plantIterator.next();
+                        if (plant.getCol() == colIndex && plant.getRow() == rowIndex) {
+                            flag = false;
                         }
                     }
-                    if (flag && sunScore >= plantCard.getCost()) {
-                        plants(plantCard.getType(),
-                                (int) (source.getLayoutX() + source.getParent().getLayoutX()),
-                                (int) (source.getLayoutY() + source.getParent().getLayoutY()),
-                                colIndex, rowIndex);
-                        updateSunScore((-1) * plantCard.getCost());
-                    }
                 }
-
+                if (flag && sunScore >= SidebarElement.getElement(SidebarElement.getCardSelected()).getCost()) {
+                    plants(SidebarElement.getCardSelected(),
+                            (int) (source.getLayoutX() + source.getParent().getLayoutX()),
+                            (int) (source.getLayoutY() + source.getParent().getLayoutY()),
+                            colIndex, rowIndex);
+                    updateSunScore((-1) * SidebarElement.getElement(SidebarElement.getCardSelected()).getCost());
+                }
+                SidebarElement.getElement(SidebarElement.getCardSelected()).setDisabledOn(GamePlayRoot);
             }
         }
     }
@@ -152,21 +149,9 @@ public class GamePlay {
                 p = new Peashooter(x, y, col, row);
                 allPlants.add(p);
                 p.drawImage(lawn_grid);
+                p.act(GamePlayRoot);
                 break;
         }
-    }
-
-    public void createPlantCards() {
-        PlantCard sunflowerCard = new PlantCard(24, 79,
-                "resource/image/sunflowerCard.png", 97, 58, 50, 1, GamePlayRoot);
-        sunflowerCard.drawImage(GamePlayRoot);
-
-        PlantCard peashooterCard = new PlantCard(24, 147,
-                "resource/image/peashooterCard.png", 97, 58, 100, 2, GamePlayRoot);
-        peashooterCard.drawImage(GamePlayRoot);
-
-        plantCards.add(sunflowerCard);
-        plantCards.add(peashooterCard);
     }
     /**
      *
