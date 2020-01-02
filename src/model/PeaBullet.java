@@ -47,11 +47,11 @@ public class PeaBullet extends GameElements {
                 img.setDisable(true);
                 peaAnimation.stop();
 
-                String splatFile = "resource/sound/shoot.wav";
+                /*String splatFile = "resource/sound/shoot.wav";
                 Media splat = new Media(new File(splatFile).toURI().toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(splat);
                 mediaPlayer.setAutoPlay(true);
-                mediaPlayer.play();
+                mediaPlayer.play();*/
             }
         }
 

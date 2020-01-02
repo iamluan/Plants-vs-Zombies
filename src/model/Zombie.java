@@ -49,7 +49,7 @@ public abstract class Zombie extends GameElements {
             //Update the location of the zombie
             setX(getX() + deltaX);
             //checkReachedHouse();
-            System.out.println("The zombie has moved");
+            //System.out.println("The zombie has moved");
         }
     }
 

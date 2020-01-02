@@ -80,10 +80,13 @@ public class GamePlay {
     public void createGame(){
         animationTimelines = new ArrayList<Timeline>();
         sunScoreLabelControl.setText(String.valueOf(sunScore));
-        createPlantCards();
+        //createPlantCards();
+
+        SidebarElement.getSidebarElements(GamePlayRoot);
+
         Random rand = new Random();
         createFallingSuns(rand);
-        zombieGenerator(rand, 2);
+        zombieGenerator(rand, 5);
         startAnimations();
     }
 
@@ -144,6 +147,38 @@ public class GamePlay {
     }
 
     // put the selected plant in lawn
+
+    @FXML
+    void getGridPosition(MouseEvent event) throws IOException {
+        Node source = (Node) event.getSource();
+        Integer colIndex = lawn_grid.getColumnIndex(source);
+        Integer rowIndex = lawn_grid.getRowIndex(source);
+        if(SidebarElement.getCardSelected() != -1){
+            if(colIndex != null && rowIndex != null){
+                boolean flag = true;
+                synchronized (allPlants){
+                    Iterator<Plant> plantIterator = allPlants.iterator();
+                    while (plantIterator.hasNext()){
+                        Plant plant = plantIterator.next();
+                        if(plant.getCol() == colIndex && plant.getRow() == rowIndex){
+                            flag = false;
+                        }
+                    }
+                }
+                if(flag && sunScore >= SidebarElement.getElement(SidebarElement.getCardSelected()).getCost()){
+                    plants(SidebarElement.getCardSelected(),
+                            (int) (source.getLayoutX() + source.getParent().getLayoutX()),
+                            (int) (source.getLayoutY() + source.getParent().getLayoutY()),
+                            colIndex, rowIndex);
+                    updateSunScore((-1) * SidebarElement.getElement(SidebarElement.getCardSelected()).getCost());
+                    SidebarElement.getElement(SidebarElement.getCardSelected()).setDisabledOn(GamePlayRoot);
+                }
+            }
+            SidebarElement.setCardSelectedToNull();
+        }
+
+    }
+
     public void plants(int type, int x, int y, int col, int row ){
         Plant p;
         switch (type){
@@ -158,39 +193,7 @@ public class GamePlay {
                 allPlants.add(p);
                 p.drawImage(lawn_grid);
                 p.act(lawn_grid);
-        }
-
-    }
-
-    @FXML
-    void getGridPosition(MouseEvent event) throws IOException {
-        Node source = (Node) event.getSource();
-        Integer colIndex = lawn_grid.getColumnIndex(source);
-        Integer rowIndex = lawn_grid.getRowIndex(source);
-
-        for(PlantCard plantCard : plantCards){
-            if(plantCard.getStatus()){
-                if(colIndex != null && rowIndex != null){
-                    boolean flag = true;
-                    synchronized (allPlants){
-                        Iterator<Plant> plantIterator = allPlants.iterator();
-                        while (plantIterator.hasNext()){
-                            Plant plant = plantIterator.next();
-                            if(plant.getCol() == colIndex && plant.getRow() == rowIndex){
-                                flag = false;
-                            }
-                        }
-                    }
-                    if(flag && sunScore >= plantCard.getCost()){
-                        plants(plantCard.getType(),
-                                (int) (source.getLayoutX() + source.getParent().getLayoutX()),
-                                (int) (source.getLayoutY() + source.getParent().getLayoutY()),
-                                colIndex, rowIndex);
-                        updateSunScore((-1) * plantCard.getCost());
-                    }
-                }
-
-            }
+                break;
         }
 
     }
@@ -202,6 +205,9 @@ public class GamePlay {
 
         PlantCard peashooterCard = new PlantCard(24, 147,
                 "resource/image/peashooterCard.png",97,58,100, 2, GamePlayRoot);
+
+        sunflowerCard.drawImage(GamePlayRoot);
+        peashooterCard.drawImage(GamePlayRoot);
 
         plantCards.add(sunflowerCard);
         plantCards.add(peashooterCard);
@@ -216,6 +222,7 @@ public class GamePlay {
         Timeline spawnZombie = new Timeline(new KeyFrame(Duration.seconds(t), event -> {
             int lane;
             int laneNumber = rand.nextInt(5);
+
             if (laneNumber == 0)
                 lane = LANE1;
             else if (laneNumber == 1)
