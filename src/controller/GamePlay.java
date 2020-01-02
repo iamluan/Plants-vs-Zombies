@@ -81,11 +81,11 @@ public class GamePlay {
         sunScoreLabelControl.setText(String.valueOf(sunScore));
         createPlantCards();
         Random rand = new Random();
+        startAnimations();
         createFallingSuns(rand);
         normalZombieGenerator(rand, 2);
         coneHeadZombieGenerator(rand, 5);
         bucketZombieGenerator(rand, 10);
-        startAnimations();
     }
 
     public void startAnimations()
@@ -193,6 +193,8 @@ public class GamePlay {
         PlantCard peashooterCard = new PlantCard(24, 147,
                 "resource/image/peashooterCard.png",97,58,100, 2, GamePlayRoot);
 
+        sunflowerCard.drawImage(GamePlayRoot);
+        peashooterCard.drawImage(GamePlayRoot);
         plantCards.add(sunflowerCard);
         plantCards.add(peashooterCard);
     }
