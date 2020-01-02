@@ -49,7 +49,11 @@ public abstract class Zombie extends GameElements {
         if (getX() > 220 && this.health > 0) {
             //Update the location of the zombie
             setX(getX() + deltaX);
-            //eatPlant();
+            try{
+            eatPlant();}
+            catch (Exception e) {
+                System.out.println(e);
+            }
             checkReachedHouse();
             // System.out.println("The zombie has moved");
         }
@@ -146,7 +150,27 @@ public abstract class Zombie extends GameElements {
         return lane;
     }
 
-    public int setHealth(int health) {
-        return health;
+    public void setHealth(int health) {
+        this.health = health;
+        if(health <= 0){
+            this.img.setVisible(false);
+            this.img.setDisable(true);
+            this.zombieAnimation.stop();
+            if(this.chomping!=null)
+            {
+                this.chomping.stop();
+            }
+            for(int i = 0; i<GamePlay.allZombies.size(); i++)
+            {
+                if(this == GamePlay.allZombies.get(i)) {
+                    GamePlay.allZombies.remove(i);
+                }
+            }
+        }
+        if (health <= 7) {
+            img.setImage(new Image("src/resource/image/normalzombie.gif", (double) 68,(double) 118,false,false));
+            this.width=68;
+            this.height=118;
+        }
     }
 }

@@ -86,7 +86,6 @@ public class GamePlay {
             while(i.hasNext())
             {
                 Zombie z = i.next();
-                z.drawImage(GamePlayRoot);
                 z.moveZombie();
             }
         }
