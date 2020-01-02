@@ -17,7 +17,7 @@ public class Peashooter extends Plant  {
 
     public Peashooter(int x, int y, int col, int row) {
         super(x, y, "resource/image/pea_shooter.gif", 75, 75, 100, col, row);
-        this.lane = col;
+        this.lane = row;
     }
 
     public void act(Pane pane){

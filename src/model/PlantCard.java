@@ -12,7 +12,7 @@ public class PlantCard extends GameElements {
 
     private int cost;
     private static ImageView selectedBorder;
-    private static int type = -1; //
+    private static int type = -1;
     private boolean isSelected = false;
     private int coolDownTime;
     private Pane pane;
@@ -28,6 +28,13 @@ public class PlantCard extends GameElements {
         else if(type == 2)
             coolDownTime = 6000;
 
+
+    }
+
+    public void setIsSelected(){
+        isSelected = false;
+    }
+    public void drawImage(Pane pane){
         super.drawImage(pane);
 
         img.setOnMouseClicked(event -> {
@@ -36,7 +43,6 @@ public class PlantCard extends GameElements {
             event.consume();
         });
     }
-
     public boolean getStatus(){
         return isSelected;
     }
@@ -69,5 +75,8 @@ public class PlantCard extends GameElements {
         selectedBorder.setVisible(false);
     }
 
+    public void setTypeToNull(){
+        selectedBorder.setVisible(false);
+    }
 
 }

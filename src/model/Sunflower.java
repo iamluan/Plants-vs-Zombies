@@ -14,7 +14,7 @@ public class Sunflower extends Plant {
     }
 
     public void act(Pane pane){
-        Timeline sunProducer = new Timeline(new KeyFrame(Duration.seconds(3), event -> {
+        Timeline sunProducer = new Timeline(new KeyFrame(Duration.seconds(10), event -> {
             if(getHp()>0) {
                 Sun s = new Sun(getX() + 20, getY() + 40, false);
                 s.drawImage(pane);
