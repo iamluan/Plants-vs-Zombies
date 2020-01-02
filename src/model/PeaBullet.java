@@ -42,22 +42,10 @@ public class PeaBullet extends GameElements {
 
     public void collideZombie(){
         if(x >= target.getX()) {
-            target.setHealth(target.getHealth() - 1);
+            target.setHp(target.getHp() - 1);
             soar.stop();
             img.setVisible(false);
             img.setDisable(true);
         }
-
-        /*            if(Math.abs(zombie.getX()-getX())<=3) {
-
-                        peaAnimation.stop();
-                    }
-
-                    /*String splatFile = "resource/sound/shoot.wav";
-                    Media splat = new Media(new File(splatFile).toURI().toString());
-                    MediaPlayer mediaPlayer = new MediaPlayer(splat);
-                    mediaPlayer.setAutoPlay(true);
-                    mediaPlayer.play();*/
-
     }
 }

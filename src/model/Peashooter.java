@@ -23,7 +23,7 @@ public class Peashooter extends Plant  {
             if(target == null) {
                 target = defineTarget();
             }
-            if ((target.getHealth() > 0 && target.getX() > x)) {
+            if ((target.getHp() > 0 && target.getX() > x) && target != null) {
                 checkHp();
                 PeaBullet peaBullet = new PeaBullet(x + 80, y + 20, getX(), target);
                 peaBullet.drawImage(pane);

@@ -28,7 +28,8 @@ public class SidebarElement extends GameElements {
 
         allElements=new HashMap<Integer, SidebarElement>();
 
-        SidebarElement sunflowerCard=new SidebarElement(24, 79, "resource/image/sunflowerCard.png",
+        SidebarElement sunflowerCard=new SidebarElement(24, 79,
+                "resource/image/sunflowerCard.png",
                 97, 58,50);
         sunflowerCard.drawImage(pane);
         sunflowerCard.coolDownTime=5000;

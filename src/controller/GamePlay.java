@@ -164,7 +164,7 @@ public class GamePlay {
     {
         NormalZombie zombie = new NormalZombie(1024, lane, laneNumber); // The x location of the outer right of the yard is 1024
         zombie.drawImage(pane);
-        zombie.moveZombie();
+        zombie.forward();
         GamePlay.allZombies.add(zombie);
     }
 
@@ -224,7 +224,7 @@ public class GamePlay {
         ConehHeadZombie zombie = new ConehHeadZombie(1024, lane, laneNumber);
         zombie.drawImage(pane);
         GamePlay.allZombies.add(zombie);
-        zombie.moveZombie();
+        zombie.forward();
     }
 
     public static void spawnBucketZombie(Pane pane, int lane, int laneNumber)
@@ -232,7 +232,7 @@ public class GamePlay {
         BucketZombie zombie = new BucketZombie(1024, lane, laneNumber);
         zombie.drawImage(pane);
         GamePlay.allZombies.add(zombie);
-        zombie.moveZombie();
+        zombie.forward();
     }
 
     public void updateSpawnedZombie() {
