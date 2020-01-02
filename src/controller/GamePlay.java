@@ -77,7 +77,7 @@ public class GamePlay {
             }
         }
 
-        synchronized (allZombies)
+        /*synchronized (allZombies)
         {
             Iterator<Zombie> i = allZombies.iterator();
             while(i.hasNext())
@@ -87,7 +87,7 @@ public class GamePlay {
                     endGame();
                 }
             }
-        }
+        }*/
     }
 
 
