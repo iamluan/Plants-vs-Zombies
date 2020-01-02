@@ -168,7 +168,7 @@ public abstract class Zombie extends GameElements {
             }
         }
         if (health <= 7) {
-            img.setImage(new Image("src/resource/image/normalzombie.gif", (double) 68,(double) 118,false,false));
+            img.setImage(new Image("resource/image/normalzombie.gif", (double) 68,(double) 118,false,false));
             this.width=68;
             this.height=118;
         }
