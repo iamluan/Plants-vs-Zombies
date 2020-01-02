@@ -96,7 +96,6 @@ public class SidebarElement extends GameElements {
 
     public static void setCardSelectedToNull(){
         cardSelected = -1;
-        border.setVisible(false
-        );
+        border.setVisible(false);
     }
 }

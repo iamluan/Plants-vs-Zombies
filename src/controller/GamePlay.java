@@ -131,8 +131,9 @@ public class GamePlay {
                             (int) (source.getLayoutY() + source.getParent().getLayoutY()),
                             colIndex, rowIndex);
                     updateSunScore((-1) * SidebarElement.getElement(SidebarElement.getCardSelected()).getCost());
+                    SidebarElement.getElement(SidebarElement.getCardSelected()).setDisabledOn(GamePlayRoot);
                 }
-                SidebarElement.getElement(SidebarElement.getCardSelected()).setDisabledOn(GamePlayRoot);
+                SidebarElement.setCardSelectedToNull();
             }
         }
     }
