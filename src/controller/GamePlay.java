@@ -64,9 +64,9 @@ public class GamePlay {
         sunScoreLabelControl.setText(String.valueOf(sunScore));
         createPlantCards();
         createFallingSuns(rand);
-        normalZombieGenerator(rand, 7);
-        coneHeadZombieGenerator(rand, 15);
-        bucketZombieGenerator(rand, 25);
+        normalZombieGenerator(rand, 10);
+        coneHeadZombieGenerator(rand, 16);
+        bucketZombieGenerator(rand, 35);
         startAnimations();
     }
 
@@ -297,7 +297,7 @@ public class GamePlay {
     // generate falling suns
     public void createFallingSuns(Random rand){
         Timeline fallingSuns= new Timeline(new KeyFrame(Duration.seconds(7), actionEvent -> {
-            Sun s = new Sun(rand.nextInt(850), 0, true);
+            Sun s = new Sun(rand.nextInt(850) + 150, 0, true);
             s.drawImage(GamePlayRoot);
             s.dropSun();
         }));
