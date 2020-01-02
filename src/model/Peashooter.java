@@ -22,13 +22,16 @@ public class Peashooter extends Plant  {
 
     public void act(Pane pane){
         Timeline shoot = new Timeline(new KeyFrame(Duration.seconds(2), actionEvent -> {
-            Iterator<Zombie> zombies = GamePlay.allZombies.iterator();
-            while (zombies.hasNext()){
-                Zombie zombie = zombies.next();
-                if(zombie.getLane() == this.lane) {
-                    PeaBullet peaBullet = new PeaBullet(x, y, getX(), lane);
-                    peaBullet.drawImage(pane);
-                    peaBullet.shoot();
+            eaten();
+            synchronized (GamePlay.allZombies) {
+                Iterator<Zombie> zombies = GamePlay.allZombies.iterator();
+                while (zombies.hasNext()) {
+                    Zombie zombie = zombies.next();
+                    if (zombie.getLane() == this.lane) {
+                        PeaBullet peaBullet = new PeaBullet(x, y, getX(), lane);
+                        peaBullet.drawImage(pane);
+                        peaBullet.shoot();
+                    }
                 }
             }
         }));
@@ -41,8 +44,6 @@ public class Peashooter extends Plant  {
     public void eaten(){
         if(hp <= 0) {
             this.shooting.stop();
-            img.setVisible(false);
-            img.setDisable(true);
         }
     }
 }

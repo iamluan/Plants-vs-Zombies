@@ -30,8 +30,10 @@ public class PeaBullet extends GameElements {
     }
 
     public void shoot(){
-        Timeline shooting = new Timeline(new KeyFrame(Duration.millis(1), event -> {
+        Timeline shooting = new Timeline(new KeyFrame(Duration.millis(5), event -> {
             if(x <= 1050) setX(getX() + 1);
+            if(x <= plantPos) img.setVisible(false);
+            else img.setVisible(true);
             collideZombie();
         }));
         shooting.setCycleCount(Timeline.INDEFINITE);
@@ -45,19 +47,18 @@ public class PeaBullet extends GameElements {
             Iterator<Zombie> zombies = GamePlay.allZombies.iterator();
             while (zombies.hasNext()) {
                 Zombie zombie = zombies.next();
-                if (lane == zombie.getLane() && !flag) {
+                if (lane == zombie.getLane() && Math.abs(zombie.getX()-getX())<=3 ) {
                     zombie.setHealth(zombie.getHealth() - 1);
                     img.setVisible(false);
                     img.setDisable(true);
                     peaAnimation.stop();
-
+                    break;
                 /*String splatFile = "resource/sound/shoot.wav";
                 Media splat = new Media(new File(splatFile).toURI().toString());
                 MediaPlayer mediaPlayer = new MediaPlayer(splat);
                 mediaPlayer.setAutoPlay(true);
                 mediaPlayer.play();*/
                 }
-                else peaAnimation.stop();
             }
         }
 

@@ -16,9 +16,9 @@ public class Sunflower extends Plant {
 
     public void act(Pane pane){
         Timeline sunProducer = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
-                Sun s = new Sun(getX(), getY(), false);
-                System.out.println(getX() + "," + getY());
-                s.drawImage(pane);
+            eaten();
+            Sun s = new Sun(getX(), getY(), false);
+            s.drawImage(pane);
         }));
         sunProducer.setCycleCount(Timeline.INDEFINITE);
         sunProducer.play();
@@ -29,8 +29,6 @@ public class Sunflower extends Plant {
     public void eaten(){
         if(hp <= 0) {
             sunProducer.stop();
-            img.setVisible(false);
-            img.setDisable(true);
         }
     }
 
