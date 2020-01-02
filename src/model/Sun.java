@@ -51,7 +51,7 @@ public class Sun extends GameElements{
 
     public void dropSun() {
         Timeline animation = new Timeline(new KeyFrame(Duration.millis(12),e -> moveSun()));
-        animation.setCycleCount(550);
+        animation.setCycleCount(Timeline.INDEFINITE);
         animation.play();
         GamePlay.animationTimelines.add(animation);
     }
