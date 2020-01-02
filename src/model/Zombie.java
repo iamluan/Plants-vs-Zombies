@@ -49,7 +49,7 @@ public abstract class Zombie extends GameElements {
         if (getX() > 220 && this.health > 0) {
             //Update the location of the zombie
             setX(getX() + deltaX);
-            eatPlant();
+            //eatPlant();
             checkReachedHouse();
             // System.out.println("The zombie has moved");
         }

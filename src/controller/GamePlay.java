@@ -53,6 +53,8 @@ public class GamePlay {
     public static List allZombies;
     public static List allPlants;
     public static ArrayList<Timeline> animationTimelines;
+    public ArrayList<PlantCard> plantCards = new ArrayList<>();
+    public int spawnedZombies = 0;
     /**
      *   Initialize all the data in the game screen
      */
@@ -60,9 +62,11 @@ public class GamePlay {
         Random rand = new Random();
         animationTimelines = new ArrayList<Timeline>();
         sunScoreLabelControl.setText(String.valueOf(sunScore));
-        SidebarElement.getSidebarElements(GamePlayRoot);
+        createPlantCards();
         createFallingSuns(rand);
-        zombieGenerator(rand, 10);
+        normalZombieGenerator(rand, 10);
+        coneHeadZombieGenerator(rand, 16);
+        bucketZombieGenerator(rand, 35);
         startAnimations();
     }
 
@@ -72,24 +76,21 @@ public class GamePlay {
             Iterator<Plant> i = allPlants.iterator();
             while (i.hasNext()) {
                 Plant p = i.next();
+                p.drawImage(lawn_grid);
                 p.act(GamePlayRoot);
-                p.eaten();
             }
         }
-
-        /*synchronized (allZombies)
+        synchronized (allZombies)
         {
             Iterator<Zombie> i = allZombies.iterator();
             while(i.hasNext())
             {
                 Zombie z = i.next();
-                if(z.checkReachedHouse()){
-                    endGame();
-                }
+                z.drawImage(GamePlayRoot);
+                z.moveZombie();
             }
-        }*/
+        }
     }
-
 
     public void initialize() throws Exception {
 
@@ -109,37 +110,35 @@ public class GamePlay {
     @FXML
     void getGridPosition(MouseEvent event) throws IOException {
         Node source = (Node) event.getSource();
+
         Integer colIndex = lawn_grid.getColumnIndex(source);
         Integer rowIndex = lawn_grid.getRowIndex(source);
 
-        if(SidebarElement.getCardSelected() != -1){
-            if(colIndex != null && rowIndex != null){
-                boolean flag = true;
-                synchronized (allPlants){
-                    Iterator<Plant> plantIterator = allPlants.iterator();
-                    while (plantIterator.hasNext()){
-                        Plant plant = plantIterator.next();
-                        if(plant.getCol() == colIndex && plant.getRow() == rowIndex){
-                            flag = false;
+        for (PlantCard plantCard : plantCards) {
+            if (plantCard.getStatus()) {
+                if (colIndex != null && rowIndex != null) {
+                    boolean flag = true;
+                    synchronized (allPlants) {
+                        Iterator<Plant> plantIterator = allPlants.iterator();
+                        while (plantIterator.hasNext()) {
+                            Plant plant = plantIterator.next();
+                            if (plant.getCol() == colIndex && plant.getRow() == rowIndex) {
+                                flag = false;
+                            }
                         }
                     }
+                    if (flag && sunScore >= plantCard.getCost()) {
+                        plants(plantCard.getType(),
+                                (int) (source.getLayoutX() + source.getParent().getLayoutX()),
+                                (int) (source.getLayoutY() + source.getParent().getLayoutY()),
+                                colIndex, rowIndex);
+                        updateSunScore((-1) * plantCard.getCost());
+                    }
                 }
-                if(flag && sunScore >= SidebarElement.getElement(SidebarElement.getCardSelected()).getCost()){
-                    plants(SidebarElement.getCardSelected(),
-                            (int) (source.getLayoutX() + source.getParent().getLayoutX()),
-                            (int) (source.getLayoutY() + source.getParent().getLayoutY()),
-                            colIndex, rowIndex);
-                    System.out.println((source.getLayoutX() + source.getParent().getLayoutX()) + "," +
-                            (source.getLayoutY() + source.getParent().getLayoutY()));
-                    updateSunScore((-1) * SidebarElement.getElement(SidebarElement.getCardSelected()).getCost());
-                    SidebarElement.getElement(SidebarElement.getCardSelected()).setDisabledOn(GamePlayRoot);
-                }
+
             }
-            SidebarElement.setCardSelectedToNull();
         }
-
     }
-
     public void plants(int type, int x, int y, int col, int row ){
         Plant p;
         switch (type){
@@ -155,17 +154,28 @@ public class GamePlay {
                 p.drawImage(lawn_grid);
                 break;
         }
+    }
 
+    public void createPlantCards() {
+        PlantCard sunflowerCard = new PlantCard(24, 79,
+                "resource/image/sunflowerCard.png", 97, 58, 50, 1, GamePlayRoot);
+        sunflowerCard.drawImage(GamePlayRoot);
+
+        PlantCard peashooterCard = new PlantCard(24, 147,
+                "resource/image/peashooterCard.png", 97, 58, 100, 2, GamePlayRoot);
+        peashooterCard.drawImage(GamePlayRoot);
+
+        plantCards.add(sunflowerCard);
+        plantCards.add(peashooterCard);
     }
     /**
      *
      * @param t : Time to spawn new zombie(by seconds)
      */
-    public void zombieGenerator(Random rand, double t) {
+    public void normalZombieGenerator(Random rand, double t) {
         Timeline spawnZombie = new Timeline(new KeyFrame(Duration.seconds(t), event -> {
             int lane;
             int laneNumber = rand.nextInt(5);
-
             if (laneNumber == 0)
                 lane = LANE1;
             else if (laneNumber == 1)
@@ -178,13 +188,60 @@ public class GamePlay {
                 lane = LANE5;
 
             spawnNormalZombie(GamePlayRoot, lane, laneNumber);
-            ;
         }));
         spawnZombie.setCycleCount(Timeline.INDEFINITE);
         spawnZombie.play();
         spawnZombieTimeline = spawnZombie;
         animationTimelines.add(spawnZombie);
 
+    }
+
+    public void coneHeadZombieGenerator(Random rand, double t) {
+        Timeline spawnZombie = new Timeline(new KeyFrame(Duration.seconds(t), event -> {
+            int lane;
+            int laneNumber = rand.nextInt(5);
+            if (laneNumber == 0)
+                lane = LANE1;
+            else if (laneNumber == 1)
+                lane = LANE2;
+            else if (laneNumber == 2)
+                lane = LANE3;
+            else if (laneNumber == 3)
+                lane = LANE4;
+            else
+                lane = LANE5;
+
+            spawnConeHeadZombie(GamePlayRoot, lane, laneNumber);
+        }));
+        spawnZombie.setCycleCount(Timeline.INDEFINITE);
+        spawnZombie.play();
+        //spawnNormalZombieTimeline = spawnZombie;
+        animationTimelines.add(spawnZombie);
+        updateSpawnedZombie();
+    }
+
+    public void bucketZombieGenerator(Random rand, double t) {
+        Timeline spawnZombie = new Timeline(new KeyFrame(Duration.seconds(t), event -> {
+            int lane;
+            int laneNumber = rand.nextInt(5);
+            if (laneNumber == 0)
+                lane = LANE1;
+            else if (laneNumber == 1)
+                lane = LANE2;
+            else if (laneNumber == 2)
+                lane = LANE3;
+            else if (laneNumber == 3)
+                lane = LANE4;
+            else
+                lane = LANE5;
+
+            spawnBucketZombie(GamePlayRoot, lane, laneNumber);
+        }));
+        spawnZombie.setCycleCount(Timeline.INDEFINITE);
+        spawnZombie.play();
+        //spawnNormalZombieTimeline = spawnZombie;
+        animationTimelines.add(spawnZombie);
+        updateSpawnedZombie();
     }
 
 
@@ -195,6 +252,33 @@ public class GamePlay {
         zombie.moveZombie();
         GamePlay.allZombies.add(zombie);
     }
+
+    public static void spawnConeHeadZombie(Pane pane, int lane, int laneNumber)
+    {
+        ConehHeadZombie zombie = new ConehHeadZombie(1024, lane, laneNumber);
+        zombie.drawImage(pane);
+        GamePlay.allZombies.add(zombie);
+        zombie.moveZombie();
+    }
+
+    public static void spawnBucketZombie(Pane pane, int lane, int laneNumber)
+    {
+        BucketZombie zombie = new BucketZombie(1024, lane, laneNumber);
+        zombie.drawImage(pane);
+        GamePlay.allZombies.add(zombie);
+        zombie.moveZombie();
+    }
+
+    public void updateSpawnedZombie() {
+        this.spawnedZombies += 1;
+    }
+
+    public int getNumSpawnedZombie() {
+        return spawnedZombies;
+    }
+
+
+
 
     public static void updateSunScore(int numOfSunAdded) {
         sunScore += numOfSunAdded;
@@ -213,7 +297,7 @@ public class GamePlay {
     // generate falling suns
     public void createFallingSuns(Random rand){
         Timeline fallingSuns= new Timeline(new KeyFrame(Duration.seconds(7), actionEvent -> {
-            Sun s = new Sun(rand.nextInt(850), 0, true);
+            Sun s = new Sun(rand.nextInt(850) + 150, 0, true);
             s.drawImage(GamePlayRoot);
             s.dropSun();
         }));
