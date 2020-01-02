@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -53,8 +52,8 @@ public class GamePlay {
     public static final int LANE5 = 450;
     public static boolean gameStatus;
     public static Timeline sunTimeline;
-    public static Timeline spawnZombieTimeline;
-    //public static Timeline spZ2;
+    public static Timeline spawnNormalZombieTimeline;
+    public static Timeline spawnConeHeadZombieTimeline;
     private static Label sunScoreLabelControl;
     private static double timeElapsed;
 
@@ -83,7 +82,9 @@ public class GamePlay {
         createPlantCards();
         Random rand = new Random();
         createFallingSuns(rand);
-        zombieGenerator(rand, 2);
+        normalZombieGenerator(rand, 2);
+        coneHeadZombieGenerator(rand, 5);
+        bucketZombieGenerator(rand, 10);
         startAnimations();
     }
 
@@ -97,14 +98,6 @@ public class GamePlay {
                 p.act(GamePlayRoot);
             }
         }
-        /*synchronized (allMowers) {
-            Iterator<LawnMower> i = allMowers.iterator();
-            while (i.hasNext()) {
-                LawnMower l = i.next();
-                l.makeImage(GamePlayRoot);
-                l.checkZombie();
-            }
-        }*/
         synchronized (allZombies)
         {
             Iterator<Zombie> i = allZombies.iterator();
@@ -138,10 +131,6 @@ public class GamePlay {
 
     }
 
-
-    @FXML
-    void loadGameMenu(MouseEvent event) throws IOException {
-    }
 
     // put the selected plant in lawn
     public void plants(int type, int x, int y, int col, int row ){
@@ -186,6 +175,7 @@ public class GamePlay {
                                 (int) (source.getLayoutX() + source.getParent().getLayoutX()),
                                 (int) (source.getLayoutY() + source.getParent().getLayoutY()),
                                 colIndex, rowIndex);
+                        System.out.println(plantCard.getType());
                         updateSunScore((-1) * plantCard.getCost());
                     }
                 }
@@ -212,7 +202,7 @@ public class GamePlay {
      *
      * @param t : Time to spawn new zombie(by seconds)
      */
-    public void zombieGenerator(Random rand, double t) {
+    public void normalZombieGenerator(Random rand, double t) {
         Timeline spawnZombie = new Timeline(new KeyFrame(Duration.seconds(t), event -> {
             int lane;
             int laneNumber = rand.nextInt(5);
@@ -231,11 +221,59 @@ public class GamePlay {
         }));
         spawnZombie.setCycleCount(Timeline.INDEFINITE);
         spawnZombie.play();
-        spawnZombieTimeline = spawnZombie;
+        spawnNormalZombieTimeline = spawnZombie;
         animationTimelines.add(spawnZombie);
+        updateSpawnedZombie();
 
     }
 
+    public void coneHeadZombieGenerator(Random rand, double t) {
+        Timeline spawnZombie = new Timeline(new KeyFrame(Duration.seconds(t), event -> {
+            int lane;
+            int laneNumber = rand.nextInt(5);
+            if (laneNumber == 0)
+                lane = LANE1;
+            else if (laneNumber == 1)
+                lane = LANE2;
+            else if (laneNumber == 2)
+                lane = LANE3;
+            else if (laneNumber == 3)
+                lane = LANE4;
+            else
+                lane = LANE5;
+
+            spawnConeHeadZombie(GamePlayRoot, lane, laneNumber);
+        }));
+        spawnZombie.setCycleCount(Timeline.INDEFINITE);
+        spawnZombie.play();
+        spawnNormalZombieTimeline = spawnZombie;
+        animationTimelines.add(spawnZombie);
+        updateSpawnedZombie();
+    }
+
+    public void bucketZombieGenerator(Random rand, double t) {
+        Timeline spawnZombie = new Timeline(new KeyFrame(Duration.seconds(t), event -> {
+            int lane;
+            int laneNumber = rand.nextInt(5);
+            if (laneNumber == 0)
+                lane = LANE1;
+            else if (laneNumber == 1)
+                lane = LANE2;
+            else if (laneNumber == 2)
+                lane = LANE3;
+            else if (laneNumber == 3)
+                lane = LANE4;
+            else
+                lane = LANE5;
+
+            spawnBucketZombie(GamePlayRoot, lane, laneNumber);
+        }));
+        spawnZombie.setCycleCount(Timeline.INDEFINITE);
+        spawnZombie.play();
+        spawnNormalZombieTimeline = spawnZombie;
+        animationTimelines.add(spawnZombie);
+        updateSpawnedZombie();
+    }
 
     public static void spawnNormalZombie(Pane pane, int lane, int laneNumber)
     {
@@ -243,6 +281,30 @@ public class GamePlay {
         zombie.drawImage(pane);
         GamePlay.allZombies.add(zombie);
         zombie.moveZombie();
+    }
+
+    public static void spawnConeHeadZombie(Pane pane, int lane, int laneNumber)
+    {
+        ConehHeadZombie zombie = new ConehHeadZombie(1024, lane, laneNumber);
+        zombie.drawImage(pane);
+        GamePlay.allZombies.add(zombie);
+        zombie.moveZombie();
+    }
+
+    public static void spawnBucketZombie(Pane pane, int lane, int laneNumber)
+    {
+        BucketZombie zombie = new BucketZombie(1024, lane, laneNumber);
+        zombie.drawImage(pane);
+        GamePlay.allZombies.add(zombie);
+        zombie.moveZombie();
+    }
+
+    public void updateSpawnedZombie() {
+        this.spawnedZombies += 1;
+    }
+
+    public int getSpwanedZombie() {
+        return spawnedZombies;
     }
 
     public static void updateSunScore(int numOfSunAdded) {
@@ -262,7 +324,7 @@ public class GamePlay {
     // generate falling suns
     public void createFallingSuns(Random rand){
         Timeline fallingSuns= new Timeline(new KeyFrame(Duration.seconds(7), actionEvent -> {
-            Sun s = new Sun(rand.nextInt(850), 0, true);
+            Sun s = new Sun(rand.nextInt(850) + 250, 0, true);
             s.drawImage(GamePlayRoot);
             s.dropSun();
         }));
@@ -275,5 +337,9 @@ public class GamePlay {
         for(Timeline timeline : animationTimelines){
             timeline.stop();
         }
+    }
+
+    @FXML
+    void loadGameMenu(MouseEvent event) throws IOException {
     }
 }
