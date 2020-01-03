@@ -8,9 +8,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
-import java.io.File;
-import java.util.Iterator;
-
 public class PeaBullet extends GameElements {
 
     private int plantPos;
@@ -29,8 +26,8 @@ public class PeaBullet extends GameElements {
 
     public void shoot(){
         soar = new Timeline(new KeyFrame(Duration.millis(3), event -> {
-            if(x <= 1050) setX(getX() + 1);
-            if(x <= plantPos) img.setVisible(false);
+            if(getX() <= 1050) setX(getX() + 1);
+            if(getX() <= plantPos) img.setVisible(false);
             else img.setVisible(true);
             collideZombie();
         }));
@@ -41,23 +38,11 @@ public class PeaBullet extends GameElements {
     }
 
     public void collideZombie(){
-        if(x >= target.getX()) {
-            target.setHealth(target.getHealth() - 1);
+        if(getX() >= target.getX()) {
+            target.setHp(target.getHp() - 1);
             soar.stop();
             img.setVisible(false);
             img.setDisable(true);
         }
-
-        /*            if(Math.abs(zombie.getX()-getX())<=3) {
-
-                        peaAnimation.stop();
-                    }
-
-                    /*String splatFile = "resource/sound/shoot.wav";
-                    Media splat = new Media(new File(splatFile).toURI().toString());
-                    MediaPlayer mediaPlayer = new MediaPlayer(splat);
-                    mediaPlayer.setAutoPlay(true);
-                    mediaPlayer.play();*/
-
     }
 }

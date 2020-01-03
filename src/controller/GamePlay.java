@@ -47,13 +47,11 @@ public class GamePlay {
     public static final int LANE3 = 250;
     public static final int LANE4 = 350;
     public static final int LANE5 = 450;
-    public static boolean gameStatus;
     public static Timeline spawnZombieTimeline;
     private static Label sunScoreLabelControl;
     public static List allZombies;
     public static List allPlants;
     public static ArrayList<Timeline> animationTimelines;
-    public ArrayList<PlantCard> plantCards = new ArrayList<>();
     public int spawnedZombies = 0;
 
     public void initialize() throws Exception {
@@ -164,7 +162,7 @@ public class GamePlay {
     {
         NormalZombie zombie = new NormalZombie(1024, lane, laneNumber); // The x location of the outer right of the yard is 1024
         zombie.drawImage(pane);
-        zombie.moveZombie();
+        zombie.forward();
         GamePlay.allZombies.add(zombie);
     }
 
@@ -224,7 +222,7 @@ public class GamePlay {
         ConehHeadZombie zombie = new ConehHeadZombie(1024, lane, laneNumber);
         zombie.drawImage(pane);
         GamePlay.allZombies.add(zombie);
-        zombie.moveZombie();
+        zombie.forward();
     }
 
     public static void spawnBucketZombie(Pane pane, int lane, int laneNumber)
@@ -232,7 +230,7 @@ public class GamePlay {
         BucketZombie zombie = new BucketZombie(1024, lane, laneNumber);
         zombie.drawImage(pane);
         GamePlay.allZombies.add(zombie);
-        zombie.moveZombie();
+        zombie.forward();
     }
 
     public void updateSpawnedZombie() {
