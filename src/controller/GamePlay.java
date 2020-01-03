@@ -81,8 +81,8 @@ public class GamePlay {
         SidebarElement.getSidebarElements(GamePlayRoot);
         createFallingSuns(rand);
         normalZombieGenerator(rand, 10);
-        //coneHeadZombieGenerator(rand, 16);
-        //bucketZombieGenerator(rand, 35);
+        coneHeadZombieGenerator(rand, 30);
+        bucketZombieGenerator(rand, 50);
         //startAnimations();
     }
 

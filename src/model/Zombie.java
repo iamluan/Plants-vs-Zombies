@@ -21,7 +21,6 @@ public abstract class Zombie extends GameElements {
     public int x, y;
     public int deltaX = -1;
     public Timeline move;
-    public Timeline chomping;
     public ImageView image;
     public Timeline eat;
 
@@ -42,7 +41,6 @@ public abstract class Zombie extends GameElements {
         }));
         move.setCycleCount(Timeline.INDEFINITE);
         move.play();
-
         GamePlay.animationTimelines.add(move);
     }
 
@@ -139,10 +137,6 @@ public abstract class Zombie extends GameElements {
             this.img.setVisible(false);
             this.img.setDisable(true);
             move.stop();
-            if(this.chomping!=null)
-            {
-                this.chomping.stop();
-            }
             GamePlay.allZombies.remove(this);
         }
     }
