@@ -27,7 +27,7 @@ public class Sunflower extends Plant {
     }
 
     public void eaten(){
-        if(hp <= 0) {
+        if(getHp() <= 0) {
             sunProducer.stop();
         }
     }

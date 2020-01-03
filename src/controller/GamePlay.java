@@ -47,13 +47,11 @@ public class GamePlay {
     public static final int LANE3 = 250;
     public static final int LANE4 = 350;
     public static final int LANE5 = 450;
-    public static boolean gameStatus;
     public static Timeline spawnZombieTimeline;
     private static Label sunScoreLabelControl;
     public static List allZombies;
     public static List allPlants;
     public static ArrayList<Timeline> animationTimelines;
-    public ArrayList<PlantCard> plantCards = new ArrayList<>();
     public int spawnedZombies = 0;
 
     public void initialize() throws Exception {

@@ -5,8 +5,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-
-import java.sql.Time;
 import java.util.Iterator;
 
 public class Peashooter extends Plant  {
@@ -23,9 +21,9 @@ public class Peashooter extends Plant  {
             if(target == null) {
                 target = defineTarget();
             }
-            if ((target.getHp() > 0 && target.getX() > x) && target != null) {
+            if ((target.getHp() > 0 && target.getX() > getX()) && target != null) {
                 checkHp();
-                PeaBullet peaBullet = new PeaBullet(x + 80, y + 20, getX(), target);
+                PeaBullet peaBullet = new PeaBullet(getX() + 80, getY() + 20, getX(), target);
                 peaBullet.drawImage(pane);
                 peaBullet.shoot();
             }else {
@@ -43,7 +41,7 @@ public class Peashooter extends Plant  {
             Iterator<Zombie> zombies = GamePlay.allZombies.iterator();
             while(zombies.hasNext()){
                 Zombie zombie=zombies.next();
-                if(zombie.getLane() == row){
+                if(zombie.getLane() == getRow()){
                     return zombie;
                 }
             }
@@ -52,7 +50,7 @@ public class Peashooter extends Plant  {
     }
 
     public void checkHp(){
-        if(hp <= 0){
+        if(getHp() <= 0){
             fire.stop();
             img.setVisible(false);
             img.setDisable(true);

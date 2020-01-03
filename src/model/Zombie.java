@@ -11,6 +11,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.sql.Time;
 import java.util.Iterator;
 
 public abstract class Zombie extends GameElements {
@@ -22,6 +23,7 @@ public abstract class Zombie extends GameElements {
     public Timeline move;
     public Timeline chomping;
     public ImageView image;
+    public Timeline eat;
 
     public Zombie(int x, int y, String imagePath, int health, int damage, int lane, int width, int height) {
         super(x, y, imagePath, width, height);
@@ -36,6 +38,7 @@ public abstract class Zombie extends GameElements {
         move = new Timeline(new KeyFrame(Duration.millis(70), e -> {
             checkHp();
             zombieWalk();
+            checkReachedHouse();
         }));
         move.setCycleCount(Timeline.INDEFINITE);
         move.play();
@@ -46,37 +49,39 @@ public abstract class Zombie extends GameElements {
     public void zombieWalk() {
         if (getX() > 220) {
             setX(getX() + deltaX);
-            detectPlant();
+            eatPlant(detectPlant());
         }
     }
 
-    public void detectPlant(){
+    public Plant detectPlant(){
         synchronized (GamePlay.allPlants) {
             Iterator<Plant> plants = GamePlay.allPlants.iterator();
             while (plants.hasNext()) {
                 Plant plant = plants.next();
-                if (plant.getRow() == lane && (x - plant.getX()) <= 1) {
-                    eatPlant(plant);
-                    if(!GamePlay.allPlants.contains(plant)) {
-                        deltaX = -1;
-                    }
+                if (plant.getRow() == lane && (getX() - plant.getX()) <= 1 ){
+                    return plant;
                 }
             }
         }
+        return null;
     }
 
     public void eatPlant(Plant plant){
-        stop();
-        if (plant.getHp() > 0 && hp > 0) {
-            Thread t = new Thread(() -> {
-                try {
-                    Thread.sleep(100);
-                }catch (InterruptedException e){
-                    e.printStackTrace();
-                }
-                plant.setHp(plant.getHp() - 1);
-            });
-            t.start();
+        if(plant != null) {
+            stop();
+            if (plant.getHp() > 0 && getHp() > 0) {
+                eat = new Timeline(new KeyFrame(Duration.millis(100), actionEvent -> {
+                    if(!GamePlay.allPlants.contains(plant)){
+                        eat.stop();
+                        move();
+                    }
+                    plant.setHp(plant.getHp() - 1);
+                }));
+                eat.setCycleCount(Timeline.INDEFINITE);
+                eat.play();
+
+                GamePlay.animationTimelines.add(eat);
+            }
         }
     }
 
@@ -84,16 +89,21 @@ public abstract class Zombie extends GameElements {
         deltaX = 0;
     }
 
+    public void move(){
+        deltaX = -1;
+    }
+
     public void checkReachedHouse() {
-        //System.out.println(getX());
-        if (getX() < 220) { //reach the house
+        if (getX() < 220) {
+
+            GamePlay.endGame();
+
             String eatingBrainFile = "src/resource/sound/eatingbrain.wav";
             Media eatingBrain = new Media(new File(eatingBrainFile).toURI().toString());
             MediaPlayer mediaPlayer = new MediaPlayer(eatingBrain);
             mediaPlayer.setAutoPlay(true);
             mediaPlayer.play();
 
-            GamePlay.endGame();
         }
     }
 
